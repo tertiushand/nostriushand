@@ -1,0 +1,60 @@
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { webSocket, WebSocketSubject, WebSocketSubjectConfig } from 'rxjs/webSocket';
+import { iNostrRequest, NostrMsgHelperService } from './nostr-msg-helper.service';
+import { iNipFilter } from './nostr.interface';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class RelayService {
+
+  constructor(
+    private nostrMsg: NostrMsgHelperService
+  ) { }
+
+  private relays: string[] = [
+    'wss://nostr-pub.wellorder.net',
+    'wss://nostr-relay.wlvs.space',
+    'wss://nostr-verified.wellorder.net',
+    'wss://nostr.openchain.fr',
+    'wss://relay.damus.io',
+    'wss://relay.nostr.info',
+    'wss://nostr.oxtr.dev',
+    'wss://nostr-pub.semisol.dev',
+    'wss://nostr-relay.wlvs.space'
+  ];
+
+  public initializedRelays: {[key: string]:InitializedRelay} = {};
+
+  public initiateCommonRelays() {
+    this.relays.forEach(relay => {
+      this.initializedRelays[relay] = new InitializedRelay(webSocket(relay), this.nostrMsg);
+    });
+  }
+
+  public initiateNewRelay(relay: string) {
+    if (!this.initializedRelays[relay])
+      this.initializedRelays[relay] = new InitializedRelay(webSocket(relay), this.nostrMsg);
+  }
+}
+
+export class InitializedRelay {
+  private websocket: WebSocketSubject<(string | iNipFilter)[]>;
+
+  constructor(websocket: WebSocketSubject<(string | iNipFilter)[]>, private nostrMsg: NostrMsgHelperService){
+    this.websocket = websocket;
+  }
+
+  sendMessage(message: iNostrRequest) {
+    this.websocket.next(this.nostrMsg.createRequestMessage(message));
+  }
+
+  listen(): Observable<any> {
+    return this.websocket.asObservable();
+  }
+
+  closeRequest(id: string) {
+    this.websocket.next(this.nostrMsg.createCloseMessage(id));
+  }
+}
