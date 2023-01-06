@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NostrMsgHelperService } from 'src/app/shared/services/websocket/nostr-msg-helper.service';
 
 import { RelayService } from '../../shared/services/websocket/relay.service';
 
@@ -10,11 +11,12 @@ import { RelayService } from '../../shared/services/websocket/relay.service';
 export class TestPageComponent implements OnInit {
 
   constructor(
-    private relays: RelayService
+    private relays: RelayService,
+    private nostrMsg: NostrMsgHelperService
   ){}
 
   ngOnInit(): void {
-    this.relays.initiateCommonRelays();
+    this.nostrMsg.initiateCommonRelays();
 
     this.relays.initializedRelays['wss://nostr-pub.wellorder.net'].listen().subscribe(response => {
       console.log(response);

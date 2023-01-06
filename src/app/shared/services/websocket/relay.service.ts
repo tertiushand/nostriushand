@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { webSocket, WebSocketSubject, WebSocketSubjectConfig } from 'rxjs/webSocket';
+import { WebSocketSubject } from 'rxjs/webSocket';
 import { iNostrRequest, NostrMsgHelperService } from './nostr-msg-helper.service';
 import { iNipFilter } from './nostr.interface';
 
@@ -9,11 +9,9 @@ import { iNipFilter } from './nostr.interface';
 })
 export class RelayService {
 
-  constructor(
-    private nostrMsg: NostrMsgHelperService
-  ) { }
+  constructor() { }
 
-  private relays: string[] = [
+  public relays: string[] = [
     'wss://nostr-pub.wellorder.net',
     'wss://nostr-relay.wlvs.space',
     'wss://nostr-verified.wellorder.net',
@@ -26,17 +24,6 @@ export class RelayService {
   ];
 
   public initializedRelays: {[key: string]:InitializedRelay} = {};
-
-  public initiateCommonRelays() {
-    this.relays.forEach(relay => {
-      this.initializedRelays[relay] = new InitializedRelay(webSocket(relay), this.nostrMsg);
-    });
-  }
-
-  public initiateNewRelay(relay: string) {
-    if (!this.initializedRelays[relay])
-      this.initializedRelays[relay] = new InitializedRelay(webSocket(relay), this.nostrMsg);
-  }
 }
 
 export class InitializedRelay {

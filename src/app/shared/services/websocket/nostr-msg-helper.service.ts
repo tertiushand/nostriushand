@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
+import { webSocket } from 'rxjs/webSocket';
 import { StorageHelperService } from '../storage-helper.service';
 import { iNipFilter } from './nostr.interface';
-import { RelayService } from './relay.service';
+import { InitializedRelay, RelayService } from './relay.service';
 
 @Injectable({
   providedIn: 'root'
@@ -84,6 +85,17 @@ export class NostrMsgHelperService {
 
   private convertDateToUnixTimestamp(date: Date): number {
     return Math.floor(date.getTime()/1000);
+  }
+
+  public initiateCommonRelays() {
+    this.relay.relays.forEach(relay => {
+      this.relay.initializedRelays[relay] = new InitializedRelay(webSocket(relay), this);
+    });
+  }
+
+  public initiateNewRelay(relay: string) {
+    if (!this.relay.initializedRelays[relay])
+      this.relay.initializedRelays[relay] = new InitializedRelay(webSocket(relay), this);
   }
 }
 
