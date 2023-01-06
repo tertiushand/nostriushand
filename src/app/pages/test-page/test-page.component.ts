@@ -17,10 +17,6 @@ export class TestPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.nostrMsg.initiateCommonRelays();
-
-    this.relays.initializedRelays['wss://nostr-pub.wellorder.net'].listen().subscribe(response => {
-      console.log(response);
-    });    
   }
 
   makeCall() {
@@ -33,6 +29,18 @@ export class TestPageComponent implements OnInit {
 
   closeRelay1() {
     this.relays.initializedRelays['wss://nostr-pub.wellorder.net'].closeRequest('adhoc');
+  }
+
+  getProfile() {
+    this.nostrMsg.getUserProfile("e998cd0639d0167fb71d3fcc1c140dc6241f372884d5fd300bbec95e206163b5",'wss://nostr-pub.wellorder.net');
+  }
+
+  getPosts() {
+    this.nostrMsg.getUserPosts("e998cd0639d0167fb71d3fcc1c140dc6241f372884d5fd300bbec95e206163b5",'wss://nostr-pub.wellorder.net');
+  }
+
+  getThings() {
+    this.nostrMsg.getUserThings("e998cd0639d0167fb71d3fcc1c140dc6241f372884d5fd300bbec95e206163b5",'wss://nostr-pub.wellorder.net');
   }
 
 }

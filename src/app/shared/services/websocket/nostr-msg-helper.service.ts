@@ -57,26 +57,54 @@ export class NostrMsgHelperService {
     //Should be the first call to get all the pubkeys initial data for events, profiles, and arrays.
   }
 
-  public getUserProfile(pubkey:string) {
-    //Should get all info on the user's profile.
-    //if pubkey is not provided, use the user's.
-    this.relay.initializedRelays[''].listen().subscribe(profile => {
-      
+  public getUserProfile(pubkey:string, relay:string) {
+    this.relay.initializedRelays[relay].listen().subscribe(profile => {
+      console.log(profile);
     });
-    this.relay.initializedRelays[''].sendMessage({
-      requestId: 'PROFILE',
+    this.relay.initializedRelays[relay].sendMessage({
+      requestId: 'USER_PROFILE',
       kinds: [0],
       authors: [pubkey]
     });
+  }
 
+  public getUsersProfile(pubkeys:string[], relay:string) {
+    this.relay.initializedRelays[relay].listen().subscribe(profile => {
+      console.log(profile);
+    });
+    this.relay.initializedRelays[relay].sendMessage({
+      requestId: 'USERS_PROFILES',
+      kinds: [0],
+      authors: pubkeys
+    });
+  }
+
+  public getUserEvents(pubkey:string, relay:string) {
+    this.relay.initializedRelays[relay].sendMessage({
+      requestId: 'USER_EVENTS',
+      authors: [pubkey],
+      kinds: [1]
+    });
+  }
+
+  public getUsersEvents(pubkeys: string[], relay:string) {
+    this.relay.initializedRelays[relay].sendMessage({
+      requestId: 'USERS_EVENTS',
+      authors: pubkeys,
+      kinds: [1]
+    });
+  }
+
+  public getUserThings(pubkey:string, relay:string) {
+    this.relay.initializedRelays[relay].sendMessage({
+      requestId: 'USER_NOTES',
+      authors: [pubkey],
+      kinds: [2]
+    });
   }
 
   public getFollowsEvents() {
     //Should get all of the user's follows' events.
-  }
-
-  public getEvent(eventId: string) {
-    //Should get the info for a single event.
   }
 
   public scrutinizeResponse(response: any) {
