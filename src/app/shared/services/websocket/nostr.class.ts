@@ -1,4 +1,3 @@
-import { NostrMsgHelperService } from "./nostr-msg-helper.service";
 import { iNipResponseEventUpgrade } from "./nostr.interface";
 
 export class NipResponse {
@@ -7,8 +6,7 @@ export class NipResponse {
     notice?: string;
 
     constructor(
-        nip01: (String | NipResponseEvent)[],
-        msgHelper: NostrMsgHelperService
+        nip01: (String | NipResponseEvent)[]
     ){
         if (nip01[0] === NipResponseId.event) {
             this.eventId = nip01[1] instanceof String?nip01[1]:undefined;

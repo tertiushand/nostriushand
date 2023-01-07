@@ -37,7 +37,7 @@ export class NostrMsgHelperService {
       filter['until'] = this.convertDateToUnixTimestamp(request.until);
 
     if (request.limit)
-      filter['limit'] = request.limit?request.limit:100;
+      filter['limit'] = request.limit?request.limit:10;
 
     return [
       "REQ",
@@ -58,9 +58,6 @@ export class NostrMsgHelperService {
   }
 
   public getUserProfile(pubkey:string, relay:string) {
-    this.relay.initializedRelays[relay].listen().subscribe(profile => {
-      console.log(profile);
-    });
     this.relay.initializedRelays[relay].sendMessage({
       requestId: 'USER_PROFILE',
       kinds: [0],
@@ -69,9 +66,6 @@ export class NostrMsgHelperService {
   }
 
   public getUsersProfile(pubkeys:string[], relay:string) {
-    this.relay.initializedRelays[relay].listen().subscribe(profile => {
-      console.log(profile);
-    });
     this.relay.initializedRelays[relay].sendMessage({
       requestId: 'USERS_PROFILES',
       kinds: [0],
@@ -95,11 +89,43 @@ export class NostrMsgHelperService {
     });
   }
 
-  public getUserThings(pubkey:string, relay:string) {
+  public getUserRelay(pubkey:string, relay:string) {
     this.relay.initializedRelays[relay].sendMessage({
-      requestId: 'USER_NOTES',
+      requestId: 'USER_RELAY',
       authors: [pubkey],
       kinds: [2]
+    });
+  }
+
+  public getUsersRelays(pubkeys:string[], relay:string) {
+    this.relay.initializedRelays[relay].sendMessage({
+      requestId: 'USERS_RELAYS',
+      authors: pubkeys,
+      kinds: [2]
+    });
+  }
+
+  public getUserContacts(pubkey:string, relay:string) {
+    this.relay.initializedRelays[relay].sendMessage({
+      requestId: 'USER_CONTACTS',
+      authors: [pubkey],
+      kinds: [3]
+    });
+  }
+
+  public getEvent(event:string, relay:string) {
+    this.relay.initializedRelays[relay].sendMessage({
+      requestId: 'EVENT',
+      eventIds: [event],
+      kinds: [1]
+    });
+  }
+
+  public getEvents(events:string[], relay:string) {
+    this.relay.initializedRelays[relay].sendMessage({
+      requestId: 'EVENTS',
+      eventIds: events,
+      kinds: [1]
     });
   }
 
