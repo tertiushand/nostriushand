@@ -98,7 +98,7 @@ export class NipResponseTag {
 export class NipProfile {
     private id: string;
     private created_at: Date;
-    private tags: string[];
+    private tags: string[][];
     private sig: string;
     private pubkey: string;
     private name: string;
@@ -113,7 +113,7 @@ export class NipProfile {
     constructor(
         id: string,
         created_at: number,
-        tags: string[],
+        tags: string[][],
         sig: string,
         pubkey: string,
         name: string,
@@ -158,7 +158,7 @@ export class NipProfile {
         return this.created_at;
     }
 
-    getTags(): string[] {
+    getTags(): string[][] {
         return this.tags;
     }
 
@@ -217,7 +217,7 @@ export class NipProfile {
         return true;
     }
 
-    setTags(tags: string[]): boolean {
+    setTags(tags: string[][]): boolean {
         this.tags = tags;
         return true;
     }

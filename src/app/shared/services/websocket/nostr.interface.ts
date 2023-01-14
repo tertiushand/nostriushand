@@ -23,6 +23,16 @@ export interface iNipFilter {
     limit?: number; //maximum number of events to be returned in the initial query
 }
 
+export interface iNipEvent {
+    content: string;
+    created_at: number;
+    id: string;
+    kind: number;
+    pubkey: string;
+    sig: string;
+    tags: string[][];
+}
+
 export interface iNipKind0Content {
     name: string; //username
     about: string; //profile about text

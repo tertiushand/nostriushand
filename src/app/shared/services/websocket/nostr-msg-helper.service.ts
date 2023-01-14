@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { webSocket } from 'rxjs/webSocket';
 import { StorageHelperService } from '../storage-helper.service';
-import { iNipFilter } from './nostr.interface';
+import { NipProfile } from './nostr.class';
+import { iNipEvent, iNipFilter, iNipKind0Content } from './nostr.interface';
 import { InitializedRelay, RelayService } from './relay.service';
 
 @Injectable({
@@ -14,7 +15,7 @@ export class NostrMsgHelperService {
     private relay: RelayService
   ) { }
 
-  public createRequestMessage(request: iNostrRequest): (string | iNipFilter)[] {
+  public createRequestMessage(request: iNostrRequest): (String | iNipFilter)[] {
     let filter: iNipFilter = {};
     if (request.eventIds)
       filter['ids'] = request.eventIds;
@@ -133,8 +134,28 @@ export class NostrMsgHelperService {
     //Should get all of the user's follows' events.
   }
 
-  public scrutinizeResponse(response: any) {
+  //This is where the scrutinizing the response begins
+  public scrutinizeResponse(response: iNipEvent) {
+    switch(response.kind) {
+      case 0: this.scrutinizeKind0(response); break;
+    }
     //Should collect the functions to identify what kind of event it is and populate the appropriate objects and arrays.
+  }
+
+  scrutinizeKind0(kind: iNipEvent) {
+    let content = JSON.parse(kind.content) as iNipKind0Content;
+    this.storage.setProfiles({
+      [kind.id]: new NipProfile(
+        kind.id,
+        kind.created_at,
+        kind.tags,
+        kind.sig,
+        kind.pubkey,
+        content.name,
+        content.about,
+        content.picture
+      )
+    })
   }
 
   private convertDateToUnixTimestamp(date: Date): number {

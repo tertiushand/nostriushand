@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { WebSocketSubject } from 'rxjs/webSocket';
 import { iNostrRequest, NostrMsgHelperService } from './nostr-msg-helper.service';
-import { iNipFilter } from './nostr.interface';
+import { iNipEvent, iNipFilter } from './nostr.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -27,9 +27,9 @@ export class RelayService {
 }
 
 export class InitializedRelay {
-  private websocket: WebSocketSubject<(string | iNipFilter)[]>;
+  private websocket: WebSocketSubject<(String | iNipEvent | iNipFilter)[]>;
 
-  constructor(websocket: WebSocketSubject<(string | iNipFilter)[]>, private nostrMsg: NostrMsgHelperService){
+  constructor(websocket: WebSocketSubject<(String | iNipEvent | iNipFilter)[]>, private nostrMsg: NostrMsgHelperService){
     this.websocket = websocket;
   }
 
@@ -37,7 +37,7 @@ export class InitializedRelay {
     this.websocket.next(this.nostrMsg.createRequestMessage(message));
   }
 
-  listen(): Observable<any> {
+  listen(): Observable<(String | iNipEvent | iNipFilter)[]> {
     return this.websocket.asObservable();
   }
 

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { StorageHelperService } from 'src/app/shared/services/storage-helper.service';
 import { NostrMsgHelperService } from 'src/app/shared/services/websocket/nostr-msg-helper.service';
+import { iNipEvent } from 'src/app/shared/services/websocket/nostr.interface';
 
 import { RelayService } from '../../shared/services/websocket/relay.service';
 
@@ -12,7 +14,8 @@ export class TestPageComponent implements OnInit {
 
   constructor(
     private relays: RelayService,
-    private nostrMsg: NostrMsgHelperService
+    private nostrMsg: NostrMsgHelperService,
+    private storage: StorageHelperService
   ){}
 
   private relayUrl: string = 'wss://nostr-pub.wellorder.net';
@@ -24,7 +27,10 @@ export class TestPageComponent implements OnInit {
 
   listenToRelay() {
     this.relays.initializedRelays[this.relayUrl].listen().subscribe(profile => {
+      if (profile[2])
+        this.nostrMsg.scrutinizeResponse(profile[2] as iNipEvent)
       console.log(profile);
+      console.log(this.storage.getProfiles());
     });
     console.log('listening to wss://nostr-pub.wellorder.net')
   }
