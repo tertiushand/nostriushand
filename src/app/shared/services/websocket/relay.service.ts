@@ -20,7 +20,16 @@ export class RelayService {
     'wss://relay.nostr.info',
     'wss://nostr.oxtr.dev',
     'wss://nostr-pub.semisol.dev',
-    'wss://nostr-relay.wlvs.space'
+    'wss://nostr-relay.wlvs.space',
+    'wss://nostr.fmt.wiz.biz',
+    'wss://nostr-relay.untethr.me',
+    'wss://nostr.drss.io',
+    'wss://nostr.slothy.win',
+    'wss://nostr.v0l.io/',
+    'wss://relay.snort.social',
+    'wss://nostr.semisol.dev',
+    'wss://nostr.orangepill.dev',
+    'wss://nostr-2.zebedee.cloud'
   ];
 
   public initializedRelays: {[key: string]:InitializedRelay} = {};
@@ -39,6 +48,10 @@ export class InitializedRelay {
 
   listen(): Observable<(String | iNipEvent | iNipFilter)[]> {
     return this.websocket.asObservable();
+  }
+
+  errorHandling(initializedRelays: {[key: string]:InitializedRelay}, relay: string) {
+    this.websocket.closed;
   }
 
   closeRequest(id: string) {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { webSocket } from 'rxjs/webSocket';
 import { StorageHelperService } from '../storage-helper.service';
-import { NipProfile } from './nostr.class';
+import { iNipProfile,iNipNote, NipNote, NipProfile, NipResponseEvent } from './nostr.class';
 import { iNipEvent, iNipFilter, iNipKind0Content } from './nostr.interface';
 import { InitializedRelay, RelayService } from './relay.service';
 
@@ -10,6 +10,7 @@ import { InitializedRelay, RelayService } from './relay.service';
 })
 export class NostrMsgHelperService {
 
+  private defaultRelay = 'wss://nostr-verified.wellorder.net';
   constructor(
     private storage: StorageHelperService,
     private relay: RelayService
@@ -58,15 +59,32 @@ export class NostrMsgHelperService {
     //Should be the first call to get all the pubkeys initial data for events, profiles, and arrays.
   }
 
-  public getUserProfile(pubkey:string, relay:string) {
-    this.relay.initializedRelays[relay].sendMessage({
-      requestId: 'USER_PROFILE',
-      kinds: [0],
-      authors: [pubkey]
-    });
+  public getUserProfile(pubkey:string, relay?:string) {
+    if (!this.storage.getProfiles()[pubkey]) {
+      if (relay) {
+        this.initiateNewRelay(relay);
+        this.setProfileCallOpen(pubkey);
+        this.relay.initializedRelays[relay].sendMessage({
+          requestId: 'USER_PROFILE',
+          kinds: [0],
+          authors: [pubkey]
+        });
+      } else if (!this.storage.getProfiles()[pubkey]) {
+        this.relay.relays.forEach(relay => {
+          this.initiateNewRelay(relay);
+          this.relay.initializedRelays[relay].sendMessage({
+            requestId: 'USER_PROFILE',
+            kinds: [0],
+            authors: [pubkey]
+          });
+        });
+        this.setProfileCallOpen(pubkey);
+      }
+    }
   }
 
   public getUsersProfile(pubkeys:string[], relay:string) {
+    this.initiateNewRelay(relay);
     this.relay.initializedRelays[relay].sendMessage({
       requestId: 'USERS_PROFILES',
       kinds: [0],
@@ -75,6 +93,7 @@ export class NostrMsgHelperService {
   }
 
   public getUserEvents(pubkey:string, relay:string) {
+    this.initiateNewRelay(relay);
     this.relay.initializedRelays[relay].sendMessage({
       requestId: 'USER_EVENTS',
       authors: [pubkey],
@@ -83,6 +102,7 @@ export class NostrMsgHelperService {
   }
 
   public getUsersEvents(pubkeys: string[], relay:string) {
+    this.initiateNewRelay(relay);
     this.relay.initializedRelays[relay].sendMessage({
       requestId: 'USERS_EVENTS',
       authors: pubkeys,
@@ -91,6 +111,7 @@ export class NostrMsgHelperService {
   }
 
   public getUserRelay(pubkey:string, relay:string) {
+    this.initiateNewRelay(relay);
     this.relay.initializedRelays[relay].sendMessage({
       requestId: 'USER_RELAY',
       authors: [pubkey],
@@ -99,6 +120,7 @@ export class NostrMsgHelperService {
   }
 
   public getUsersRelays(pubkeys:string[], relay:string) {
+    this.initiateNewRelay(relay);
     this.relay.initializedRelays[relay].sendMessage({
       requestId: 'USERS_RELAYS',
       authors: pubkeys,
@@ -107,6 +129,7 @@ export class NostrMsgHelperService {
   }
 
   public getUserContacts(pubkey:string, relay:string) {
+    this.initiateNewRelay(relay);
     this.relay.initializedRelays[relay].sendMessage({
       requestId: 'USER_CONTACTS',
       authors: [pubkey],
@@ -114,15 +137,32 @@ export class NostrMsgHelperService {
     });
   }
 
-  public getEvent(event:string, relay:string) {
-    this.relay.initializedRelays[relay].sendMessage({
-      requestId: 'EVENT',
-      eventIds: [event],
-      kinds: [1]
-    });
+  public getEvent(event:string, relay?:string) {
+    if (!this.storage.getNotes()[event]) {
+      if (relay) {
+        this.initiateNewRelay(relay);
+        this.relay.initializedRelays[relay].sendMessage({
+          requestId: 'EVENT',
+          eventIds: [event],
+          kinds: [1]
+        });
+      } else {
+        this.relay.relays.forEach(relay => {
+          this.initiateNewRelay(relay);
+          this.setNoteCallOpen(event);
+          this.relay.initializedRelays[relay].sendMessage({
+            requestId: 'EVENT',
+            eventIds: [event],
+            kinds: [1]
+          });
+        })
+      }
+      this.setNoteCallOpen(event);
+    }
   }
 
   public getEvents(events:string[], relay:string) {
+    this.initiateNewRelay(relay);
     this.relay.initializedRelays[relay].sendMessage({
       requestId: 'EVENTS',
       eventIds: events,
@@ -135,31 +175,107 @@ export class NostrMsgHelperService {
   }
 
   //This is where the scrutinizing the response begins
-  public scrutinizeResponse(response: iNipEvent) {
-    switch(response.kind) {
-      case 0: this.scrutinizeKind0(response); break;
+  public scrutinizeResponse(response: iNipEvent, eventId: string, relay: string) {
+    switch(response?.kind) {
+      case 0: this.scrutinizeKind0(response, relay); break;
+      case 1: this.scrutinizeKind1(response, eventId, relay); break;
     }
+    
     //Should collect the functions to identify what kind of event it is and populate the appropriate objects and arrays.
   }
 
-  scrutinizeKind0(kind: iNipEvent) {
+  scrutinizeKind0(kind: iNipEvent, relay: string) {
     let content = JSON.parse(kind.content) as iNipKind0Content;
-    this.storage.setProfiles({
-      [kind.id]: new NipProfile(
-        kind.id,
-        kind.created_at,
-        kind.tags,
-        kind.sig,
-        kind.pubkey,
-        content.name,
-        content.about,
-        content.picture
-      )
-    })
+    let newProfile: NipProfile;
+    if (this.storage.getProfiles()[kind.id]) {
+      newProfile = new NipProfile(this.storage.getProfiles()[kind.id]);
+      newProfile.updateProfile({
+        id: kind.id,
+        created_at: kind.created_at,
+        tags: kind.tags,
+        sig: kind.sig,
+        pubkey: kind.pubkey,
+        name: content.name,
+        about: content.about,
+        picture: content.picture,
+        preferredRelay: newProfile?newProfile.preferredRelay:relay
+      })
+    } else {
+      newProfile = new NipProfile({
+        id: kind.id,
+        created_at: kind.created_at,
+        tags: kind.tags,
+        sig: kind.sig,
+        pubkey: kind.pubkey,
+        name: content.name,
+        about: content.about,
+        picture: content.picture,
+        preferredRelay: relay
+      });
+    }
+    
+    this.storage.addToProfiles(newProfile);
+  }
+
+  scrutinizeKind1(kind: iNipEvent, eventId: string, relay: string) {
+    let hasReply = undefined;
+    let hasRoot = undefined;
+
+    kind.tags.forEach(tag => {
+      if (tag[3]) {
+        if (tag[3] === 'root') {
+          hasRoot = tag[1];
+          this.getEvent(tag[1],tag[2]);
+        }
+        if (tag[3] === 'reply') {
+          hasReply = tag[1];
+          this.getEvent(tag[1],tag[2]);
+        }
+      }
+      
+      if (tag[0] === 'p') {
+        this.getUserProfile(tag[1], tag[2]);
+      } else if (tag[0] === 'e' && eventId !== 'EVENT') {
+        this.getEvent(tag[1], tag[2]);
+      }
+    });
+
+    this.storage.addToNotes(new NipNote({
+      relay: relay,
+      content: kind.content,
+      created_at: kind.created_at,
+      id: kind.id,
+      pubkey: kind.pubkey,
+      sig: kind.sig,
+      root: hasRoot,
+      reply: hasReply
+    }));
+
+
   }
 
   private convertDateToUnixTimestamp(date: Date): number {
     return Math.floor(date.getTime()/1000);
+  }
+
+  private setProfileCallOpen(pubkey: string) {
+    let newNotes: {[key: string]:NipNote} = this.storage.getNotes();
+    if (newNotes[pubkey])
+      newNotes[pubkey].callOpen = true;
+    else {
+      newNotes[pubkey] = {callOpen:true} as NipNote;
+      this.storage.setNotes(newNotes);
+    }
+  }
+
+  private setNoteCallOpen(noteId: string) {
+    let newProfiles: {[key: string]:NipProfile} = this.storage.getProfiles();
+    if (newProfiles[noteId])
+    newProfiles[noteId].callOpen = true;
+    else {
+      newProfiles[noteId] = {callOpen:true} as NipProfile;
+      this.storage.setProfiles(newProfiles);
+    }
   }
 
   public initiateCommonRelays() {
@@ -169,8 +285,12 @@ export class NostrMsgHelperService {
   }
 
   public initiateNewRelay(relay: string) {
-    if (!this.relay.initializedRelays[relay])
+    if (!this.relay.initializedRelays[relay]) {
       this.relay.initializedRelays[relay] = new InitializedRelay(webSocket(relay), this);
+      this.relay.initializedRelays[relay].listen().subscribe(
+        message => {this.scrutinizeResponse(message[2] as iNipEvent,message[1] as string,relay)}
+      );
+    }
   }
 }
 

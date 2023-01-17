@@ -96,114 +96,140 @@ export class NipResponseTag {
 }
 
 export class NipProfile {
-    private id: string;
-    private created_at: Date;
-    private tags: string[][];
-    private sig: string;
-    private pubkey: string;
-    private name: string;
-    private about: string;
-    private picture: string;
-    private notes: iEventStorage[] = [];
-    private allNotes: iEventStorage[] = [];
-    private replies: iEventStorage[] = [];
-    private media: iEventStorage[] = [];
-    private likes: iEventStorage[] = [];
+    public id?: string;
+    public preferredRelay?: string;
+    public created_at?: Date;
+    public tags?: string[][];
+    public sig?: string;
+    public pubkey?: string;
+    public name?: string;
+    public about?: string;
+    public picture?: string;
+    public notes?: iNoteStorage[] = [];
+    public allNotes?: iNoteStorage[] = [];
+    public replies?: iNoteStorage[] = [];
+    public media?: iNoteStorage[] = [];
+    public likes?: iNoteStorage[] = [];
+    public callOpen?: boolean;
 
-    constructor(
-        id: string,
-        created_at: number,
-        tags: string[][],
-        sig: string,
-        pubkey: string,
-        name: string,
-        about: string,
-        picture: string
-    ){
-        this.id = id;
-        this.created_at = this.convertUnixTimestampToDate(created_at);
-        this.tags = tags;
-        this.sig = sig;
-        this.pubkey = pubkey;
-        this.name = name;
-        this.about = about;
-        this.picture = picture;
+    constructor(profile: iNipProfile){
+        this.id = profile.id;
+        this.created_at = profile.created_at instanceof Date?
+            profile.created_at:
+            profile.created_at?
+                this.convertUnixTimestampToDate(profile.created_at):
+                undefined;
+        this.tags = profile.tags;
+        this.sig = profile.sig;
+        this.pubkey = profile.pubkey;
+        this.name = profile.name;
+        this.about = profile.about;
+        this.picture = profile.picture;
+        this.preferredRelay = profile.preferredRelay;
+        this.callOpen = false;
     }
 
-    addToNote(event: iEventStorage): boolean {
-        return this.checkAndPush(this.notes, event);
+    public updateProfile(profile: iNipProfile): boolean {
+        this.id = profile.id;
+        this.created_at = profile.created_at instanceof Date?
+            profile.created_at:
+            profile.created_at?
+                this.convertUnixTimestampToDate(profile.created_at):
+                undefined;
+        this.tags = profile.tags;
+        this.sig = profile.sig;
+        this.pubkey = profile.pubkey;
+        this.name = profile.name;
+        this.about = profile.about;
+        this.picture = profile.picture;
+        this.preferredRelay = profile.preferredRelay;
+        this.callOpen = false;
+        return true;
     }
 
-    addToAllNotes(event: iEventStorage): boolean {
-        return this.checkAndPush(this.allNotes, event);
+    addToNote(event: iNoteStorage): boolean {
+        return this.checkAndPush(event, this.notes);
     }
 
-    addToReplies(event: iEventStorage): boolean {
-        return this.checkAndPush(this.replies, event);
+    addToAllNotes(event: iNoteStorage): boolean {
+        return this.checkAndPush(event, this.allNotes);
     }
 
-    addToMedia(event: iEventStorage): boolean {
-        return this.checkAndPush(this.media, event);
+    addToReplies(event: iNoteStorage): boolean {
+        return this.checkAndPush(event, this.replies);
     }
 
-    addToLikes(event: iEventStorage): boolean {
-        return this.checkAndPush(this.likes, event);
+    addToMedia(event: iNoteStorage): boolean {
+        return this.checkAndPush(event, this.media);
     }
 
-    getId(): string {
+    addToLikes(event: iNoteStorage): boolean {
+        return this.checkAndPush(event, this.likes);
+    }
+
+    getId(): string | undefined {
         return this.id;
     }
 
-    getCreatedAt(): Date {
+    getCreatedAt(): Date | undefined {
         return this.created_at;
     }
 
-    getTags(): string[][] {
+    getTags(): string[][] | undefined {
         return this.tags;
     }
 
-    getSig(): string {
+    getSig(): string | undefined {
         return this.sig;
     }
 
-    getPubkey(): string {
+    getPubkey(): string | undefined {
         return this.pubkey;
     }
 
-    getName(): string {
+    getName(): string | undefined {
         return this.name;
     }
 
-    getAbout(): string {
+    getAbout(): string | undefined {
         return this.about;
     }
 
-    getPicture(): string {
+    getPicture(): string | undefined {
         return this.picture;
     }
 
-    getNotes(): iEventStorage[] {
+    getNotes(): iNoteStorage[] | undefined {
         return this.notes;
     }
 
-    getAllNotes(): iEventStorage[] {
+    getPreferredRelay(): string | undefined {
+        return this.preferredRelay;
+    }
+
+    getAllNotes(): iNoteStorage[] | undefined {
         return this.allNotes;
     }
 
-    getReplies(): iEventStorage[] {
+    getReplies(): iNoteStorage[] | undefined {
         return this.replies;
     }
 
-    getMedia(): iEventStorage[] {
+    getMedia(): iNoteStorage[] | undefined {
         return this.media;
     }
 
-    getLikes(): iEventStorage[] {
+    getLikes(): iNoteStorage[] | undefined {
         return this.likes;
     }
 
     setId(id: string): boolean {
         this.id = id;
+        return true;
+    }
+
+    setPreferredRelay(relay: string): boolean {
+        this.preferredRelay = relay;
         return true;
     }
 
@@ -276,7 +302,9 @@ export class NipProfile {
       return new Date(timestamp*1000);
     }
 
-    private checkAndPush(events: iEventStorage[], eventToPush: iEventStorage): boolean {
+    private checkAndPush(eventToPush: iNoteStorage, events?: iNoteStorage[]): boolean {
+        if (!events)
+            events = [];
         if (events.length === 0) {
             events.push(eventToPush);
             return true;
@@ -285,7 +313,7 @@ export class NipProfile {
         let eventInserted: boolean = false;
         events.some((event,i) => {
             if (event.date.getTime() < eventToPush.date.getTime()){
-                events.splice(i,0,eventToPush);
+                events?.splice(i,0,eventToPush);
                 eventInserted = true;
                 return true;
             }
@@ -299,7 +327,88 @@ export class NipProfile {
     }
 }
 
-export interface iEventStorage {
+export class NipNote {
+    public content?: string;
+    public created_at?: Date;
+    public id?: string;
+    public pubkey?: string;
+    public sig?: string;
+    public relay?: string;
+    public root?: string;
+    public reply?: string;
+    public callOpen?: boolean;
+
+    constructor(note: iNipNote) {
+        this.content = note.content;
+        this.relay = note.relay;
+        this.created_at = note.created_at instanceof Date?
+            note.created_at:
+            note.created_at?
+                this.convertUnixTimestampToDate(note.created_at):
+                undefined;
+        this.id = note.id;
+        this.pubkey = note.pubkey;
+        this.sig = note.sig;
+        this.root = note.root;
+        this.reply = note.reply;
+        this.callOpen = false;
+    }
+
+    public updateNote(note: iNipNote): boolean {
+        this.relay = note.relay;
+        this.content = note.content;
+        this.created_at = note.created_at instanceof Date?
+            note.created_at:
+            note.created_at?
+                this.convertUnixTimestampToDate(note.created_at):
+                undefined;
+        this.id = note.id;
+        this.pubkey = note.pubkey;
+        this.sig = note.sig;
+        this.root = note.root;
+        this.reply = note.reply;
+        this.callOpen = false;
+        return true;
+    }
+
+    getContent(): string | undefined {
+        return this.content;
+    }
+
+    getCreatedAt(): Date | undefined {
+        return this.created_at;
+    }
+
+    getId(): string | undefined {
+        return this.id;
+    }
+
+    getPubkey(): string | undefined {
+        return this.pubkey;
+    }
+
+    getSig(): string | undefined {
+        return this.sig;
+    }
+
+    getRelay(): string | undefined {
+        return this.relay;
+    }
+
+    getRoot(): string | undefined {
+        return this.root;
+    }
+
+    getReply(): string | undefined {
+        return this.reply;
+    }
+
+    private convertUnixTimestampToDate(timestamp: number): Date {
+      return new Date(timestamp*1000);
+    }
+}
+
+export interface iNoteStorage {
     id: string;
     date: Date;
 }
@@ -312,4 +421,32 @@ export enum TagId {
 export enum NipResponseId {
     event = 'EVENT',
     notice = 'NOTICE'
+}
+
+export interface iNipProfile {
+    id?: string;
+    preferredRelay?: string;
+    created_at?: Date | number;
+    tags?: string[][];
+    sig?: string;
+    pubkey?: string;
+    name?: string;
+    about?: string;
+    picture?: string;
+    notes?: iNoteStorage[];
+    allNotes?: iNoteStorage[];
+    replies?: iNoteStorage[];
+    media?: iNoteStorage[];
+    likes?: iNoteStorage[];
+}
+
+export interface iNipNote {
+    content?: string;
+    created_at?: Date | number;
+    id?: string;
+    pubkey?: string;
+    sig?: string;
+    relay?: string;
+    root?: string;
+    reply?: string;
 }

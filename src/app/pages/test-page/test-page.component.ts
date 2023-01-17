@@ -22,17 +22,15 @@ export class TestPageComponent implements OnInit {
   private userPubkey: string = 'e998cd0639d0167fb71d3fcc1c140dc6241f372884d5fd300bbec95e206163b5'
 
   ngOnInit(): void {
-    this.nostrMsg.initiateCommonRelays();
+    //this.nostrMsg.initiateCommonRelays();
   }
 
   listenToRelay() {
     this.relays.initializedRelays[this.relayUrl].listen().subscribe(profile => {
       if (profile[2])
-        this.nostrMsg.scrutinizeResponse(profile[2] as iNipEvent)
-      console.log(profile);
-      console.log(this.storage.getProfiles());
+        this.nostrMsg.scrutinizeResponse(profile[2] as iNipEvent, profile[1] as string, this.relayUrl)
     });
-    console.log('listening to wss://nostr-pub.wellorder.net')
+    console.log('listening to '+this.relayUrl)
   }
 
   closeRelay1() {
@@ -57,6 +55,14 @@ export class TestPageComponent implements OnInit {
 
   getContacts() {
     this.nostrMsg.getUserContacts(this.userPubkey,this.relayUrl);
+  }
+
+  showNotes() {
+    console.log(this.storage.getNotes());
+  }
+
+  showProfiles() {
+    console.log(this.storage.getProfiles());
   }
 
 }
