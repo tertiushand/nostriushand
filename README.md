@@ -1,6 +1,6 @@
 # Nostriushand
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.0.4.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.0.4. It is designed to a client UI interface for the Nostr protocol.
 
 ## Development server
 

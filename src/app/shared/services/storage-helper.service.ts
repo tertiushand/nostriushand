@@ -9,7 +9,7 @@ export class StorageHelperService {
 
   constructor() { }
 
-  //Events are used to store all gathered Notes by event id.
+  //Notes are used to store all gathered Notes by event id.
   setNotes(events: {[key: string]:NipNote}): boolean {
     sessionStorage.setItem(StorageLabels.notes, this.convertJsonToString(events));
     return true;
@@ -233,20 +233,34 @@ export class StorageHelperService {
 
   //Private methods
   checkAndPush(events: iNoteStorage[], eventToPush: iNoteStorage): iNoteStorage[] {
+    if (!(events instanceof Array))
+      events = [];
+    
+    let eventInserted: boolean = false;
     if (events.length === 0) {
       events.push(eventToPush);
       return events;
-    }
-    
-    let eventInserted: boolean = false;
-    events.some((event,i) => {
-        if (event.date.getTime() < eventToPush.date.getTime()){
-            events.splice(i,0,eventToPush);
-            eventInserted = true;
-            return true;
+    } else {
+      let newEvent: boolean = true;
+      events.some((event,i) => {
+        if (event.id === eventToPush.id) {
+          newEvent = false;
+          return true;
         }
         return false;
-    });
+      })
+
+      if (newEvent) {
+      events.some((event,i) => {
+            if (new Date(event.date).getTime() < eventToPush.date.getTime()){
+                events.splice(i,0,eventToPush);
+                eventInserted = true;
+                return true;
+            }
+            return false;
+        });
+      }
+    }
 
     if (!eventInserted)
         events.push(eventToPush);

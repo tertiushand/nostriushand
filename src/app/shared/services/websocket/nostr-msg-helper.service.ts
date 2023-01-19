@@ -222,15 +222,15 @@ export class NostrMsgHelperService {
     let hasRoot = undefined;
 
     kind.tags.forEach(tag => {
-      if (tag[3]) {
-        if (tag[3] === 'root') {
+      switch (tag[3]) {
+        case 'root':
           hasRoot = tag[1];
           this.getEvent(tag[1],tag[2]);
-        }
-        if (tag[3] === 'reply') {
+          break;
+        case 'reply':
           hasReply = tag[1];
           this.getEvent(tag[1],tag[2]);
-        }
+          break;
       }
       
       if (tag[0] === 'p') {
@@ -251,11 +251,25 @@ export class NostrMsgHelperService {
       reply: hasReply
     }));
 
+    this.storage.addToAllNotes({
+      id: kind.id,
+      date: this.convertUnixTimestampToDate(kind.created_at)
+    });
 
+    if (!hasRoot) {
+      this.storage.addToNotesList({
+        id: kind.id,
+        date: this.convertUnixTimestampToDate(kind.created_at)
+      });
+    }
   }
 
   private convertDateToUnixTimestamp(date: Date): number {
     return Math.floor(date.getTime()/1000);
+  }
+
+  private convertUnixTimestampToDate(timestamp: number): Date {
+    return new Date(timestamp*1000);
   }
 
   private setProfileCallOpen(pubkey: string) {
