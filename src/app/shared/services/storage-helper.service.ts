@@ -239,6 +239,7 @@ export class StorageHelperService {
     let eventInserted: boolean = false;
     if (events.length === 0) {
       events.push(eventToPush);
+      eventInserted = true;
       return events;
     } else {
       let newEvent: boolean = true;

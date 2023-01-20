@@ -18,7 +18,7 @@ export class TestPageComponent implements OnInit {
     private storage: StorageHelperService
   ){}
 
-  private relayUrl: string = 'wss://nostr-pub.wellorder.net';
+  private relayUrl: string = 'wss://nostr.onsats.org';
   private userPubkey: string = 'e998cd0639d0167fb71d3fcc1c140dc6241f372884d5fd300bbec95e206163b5'
 
   ngOnInit(): void {

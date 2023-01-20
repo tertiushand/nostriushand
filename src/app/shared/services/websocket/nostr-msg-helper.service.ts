@@ -10,7 +10,6 @@ import { InitializedRelay, RelayService } from './relay.service';
 })
 export class NostrMsgHelperService {
 
-  private defaultRelay = 'wss://nostr-verified.wellorder.net';
   constructor(
     private storage: StorageHelperService,
     private relay: RelayService
@@ -221,6 +220,11 @@ export class NostrMsgHelperService {
     let hasReply = undefined;
     let hasRoot = undefined;
 
+    let author = this.storage.getProfiles()[kind.pubkey];
+    author = author?new NipProfile(author):new NipProfile({
+      pubkey: kind.pubkey
+    });
+
     kind.tags.forEach(tag => {
       switch (tag[3]) {
         case 'root':
@@ -256,11 +260,27 @@ export class NostrMsgHelperService {
       date: this.convertUnixTimestampToDate(kind.created_at)
     });
 
+    
+
     if (!hasRoot) {
       this.storage.addToNotesList({
         id: kind.id,
         date: this.convertUnixTimestampToDate(kind.created_at)
       });
+    } else {
+      this.storage.addToReplies({
+        id: kind.id,
+        date: this.convertUnixTimestampToDate(kind.created_at)
+      });
+
+      this.mediaTypes.forEach(type => {
+        if (kind.content.toLowerCase().includes(type)) {
+          this.storage.addToMedia({
+            id: kind.id,
+            date: this.convertUnixTimestampToDate(kind.created_at)
+          })
+        }
+      })
     }
   }
 
@@ -306,6 +326,19 @@ export class NostrMsgHelperService {
       );
     }
   }
+
+  public mediaTypes = [
+    '.gif',
+    '.jpg',
+    '.jpeg',
+    '.png',
+    'youtube.com/watch',
+    'youtu.be',
+    'vimeo.com',
+    '.mov',
+    '.avi',
+    '.flv'
+  ]
 }
 
 export interface iNostrRequest {

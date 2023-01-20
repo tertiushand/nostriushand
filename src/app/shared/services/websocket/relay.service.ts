@@ -29,7 +29,11 @@ export class RelayService {
     'wss://relay.snort.social',
     'wss://nostr.semisol.dev',
     'wss://nostr.orangepill.dev',
-    'wss://nostr-2.zebedee.cloud'
+    'wss://nostr-2.zebedee.cloud',
+    'wss://nostr.onsats.org',
+    'wss://nostr-relay.wlvs.space',
+    'wss://nostr.bitcoiner.social',
+    'wss://nostr.zebedee.cloud'
   ];
 
   public initializedRelays: {[key: string]:InitializedRelay} = {};
