@@ -127,6 +127,11 @@ export class NipProfile {
         this.picture = profile.picture;
         this.preferredRelay = profile.preferredRelay;
         this.callOpen = false;
+        this.notes = profile.notes?profile.notes:[];
+        this.allNotes = profile.allNotes?profile.allNotes:[];
+        this.replies = profile.replies?profile.replies:[];
+        this.media = profile.media?profile.media:[];
+        this.likes = profile.likes?profile.likes:[];
     }
 
     public updateProfile(profile: iNipProfile): boolean {
@@ -303,23 +308,36 @@ export class NipProfile {
     }
 
     private checkAndPush(eventToPush: iNoteStorage, events?: iNoteStorage[]): boolean {
-        if (!events)
-            events = [];
-        if (events.length === 0) {
-            events.push(eventToPush);
-            return true;
-        }
+        if (!events || !(events instanceof Array))
+          events = [];
         
         let eventInserted: boolean = false;
-        events.some((event,i) => {
-            if (event.date.getTime() < eventToPush.date.getTime()){
-                events?.splice(i,0,eventToPush);
-                eventInserted = true;
-                return true;
+        if (events.length === 0) {
+          events.push(eventToPush);
+          eventInserted = true;
+          return true;
+        } else {
+          let newEvent: boolean = true;
+          events.some((event,i) => {
+            if (event.id === eventToPush.id) {
+              newEvent = false;
+              return true;
             }
             return false;
-        });
-
+          })
+    
+          if (newEvent) {
+          events.some((event,i) => {
+                if (new Date(event.date).getTime() < eventToPush.date.getTime()){
+                    events?.splice(i,0,eventToPush);
+                    eventInserted = true;
+                    return true;
+                }
+                return false;
+            });
+          }
+        }
+    
         if (!eventInserted)
             events.push(eventToPush);
         

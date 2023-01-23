@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StorageHelperService } from 'src/app/shared/services/storage-helper.service';
 import { NostrMsgHelperService } from 'src/app/shared/services/websocket/nostr-msg-helper.service';
-import { iNipEvent } from 'src/app/shared/services/websocket/nostr.interface';
+import { iNipEvent, Nos2x } from 'src/app/shared/services/websocket/nostr.interface';
 
 import { RelayService } from '../../shared/services/websocket/relay.service';
 
@@ -63,6 +63,11 @@ export class TestPageComponent implements OnInit {
 
   showProfiles() {
     console.log(this.storage.getProfiles());
+  }
+
+  getNos2xPubKey() {
+    let nos2x = window as Window as Nos2x;
+    return nos2x.nostr.getPublicKey() as Window;
   }
 
 }

@@ -176,8 +176,8 @@ export class StorageHelperService {
     if (!updateProfile)
       updateProfile = {};
 
-    if (profile.id) {
-      updateProfile[profile.id] = new NipProfile(profile);
+    if (profile.pubkey) {
+      updateProfile[profile.pubkey] = new NipProfile(profile);
       this.setProfiles(updateProfile);
     }
     return true;

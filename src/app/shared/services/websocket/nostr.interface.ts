@@ -38,3 +38,19 @@ export interface iNipKind0Content {
     about: string; //profile about text
     picture: string; //url of profile picture
 }
+
+export interface Nos2x extends Window {
+    nostr: NostrExtension;
+}
+
+export interface NostrExtension {
+    getPublicKey: Function; // returns your public key as hex
+    signEvent: Function; // returns the full event object signed. pass Event as argument.
+    getRelays: Function; // returns a map of relays
+    nip04: Nip04Extension;
+}
+
+export interface Nip04Extension {
+    encrypt: Function; //has pubkey, plaintext arguments. returns ciphertext+iv as specified in nip04
+    decrypt: Function; //has pubkey, ciphertext arguments. takes ciphertext+iv as specified
+}

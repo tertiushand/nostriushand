@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { webSocket } from 'rxjs/webSocket';
 import { StorageHelperService } from '../storage-helper.service';
-import { iNipProfile,iNipNote, NipNote, NipProfile, NipResponseEvent } from './nostr.class';
+import { iNipProfile,iNipNote, NipNote, NipProfile, NipResponseEvent, iNoteStorage } from './nostr.class';
 import { iNipEvent, iNipFilter, iNipKind0Content } from './nostr.interface';
 import { InitializedRelay, RelayService } from './relay.service';
 
@@ -37,8 +37,7 @@ export class NostrMsgHelperService {
     if (request.until)
       filter['until'] = this.convertDateToUnixTimestamp(request.until);
 
-    if (request.limit)
-      filter['limit'] = request.limit?request.limit:10;
+    filter['limit'] = request.limit?request.limit:20;
 
     return [
       "REQ",
@@ -255,33 +254,27 @@ export class NostrMsgHelperService {
       reply: hasReply
     }));
 
-    this.storage.addToAllNotes({
-      id: kind.id,
-      date: this.convertUnixTimestampToDate(kind.created_at)
-    });
+    const noteStorage: iNoteStorage = {id:kind.id,date:this.convertUnixTimestampToDate(kind.created_at)};
 
+    this.storage.addToAllNotes(noteStorage);
+    author.addToAllNotes(noteStorage);
     
 
     if (!hasRoot) {
-      this.storage.addToNotesList({
-        id: kind.id,
-        date: this.convertUnixTimestampToDate(kind.created_at)
-      });
-    } else {
-      this.storage.addToReplies({
-        id: kind.id,
-        date: this.convertUnixTimestampToDate(kind.created_at)
-      });
+      this.storage.addToNotesList(noteStorage);
+      author.addToNote(noteStorage);
 
       this.mediaTypes.forEach(type => {
         if (kind.content.toLowerCase().includes(type)) {
-          this.storage.addToMedia({
-            id: kind.id,
-            date: this.convertUnixTimestampToDate(kind.created_at)
-          })
+          this.storage.addToMedia(noteStorage)
         }
-      })
+      });
+    } else {
+      this.storage.addToReplies(noteStorage);
+      author.addToReplies(noteStorage);
     }
+
+    this.storage.addToProfiles(author);
   }
 
   private convertDateToUnixTimestamp(date: Date): number {
