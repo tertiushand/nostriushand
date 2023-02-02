@@ -22,7 +22,6 @@ export class TestPageComponent implements OnInit {
   ){}
 
   private relayUrl: string = this.relays.relays[0];
-  private userPubkey: String = this.storage.getUserInfo().pubkey;
 
   ngOnInit(): void {
   }

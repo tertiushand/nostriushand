@@ -17,6 +17,6 @@ export class UserInfoService {
     nos2x.nostr.getPublicKey().then((pubkey: string) => {
       this.storage.setUserInfo(new UserInfo({pubkey: pubkey}));
     });
-    this.storage.setUserInfo(new UserInfo({pubkey: (nos2x.nostr.getPublicKey() as String)}));
+    this.storage.setUserInfo(new UserInfo({pubkey: nos2x.nostr.getPublicKey()}));
   }
 }
