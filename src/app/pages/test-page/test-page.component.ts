@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { StorageHelperService } from 'src/app/shared/services/storage-helper.service';
 import { UserInfo } from 'src/app/shared/services/system.class';
 import { EventIds, NostrMsgHelperService } from 'src/app/shared/services/websocket/nostr-msg-helper.service';
+import { UserInfoService } from 'src/app/shared/services/user-info.service';
 import { iNipEvent, Nos2x } from 'src/app/shared/services/websocket/nostr.interface';
 
 import { RelayService } from '../../shared/services/websocket/relay.service';
@@ -16,10 +17,12 @@ export class TestPageComponent implements OnInit {
   constructor(
     private relays: RelayService,
     private nostrMsg: NostrMsgHelperService,
-    public storage: StorageHelperService
+    public storage: StorageHelperService,
+    private userInfo: UserInfoService
   ){}
 
-  private relayUrl: string = 'wss://nostr.onsats.org';
+  private relayUrl: string = this.relays.relays[0];
+  private userPubkey: String = this.storage.getUserInfo().pubkey;
 
   ngOnInit(): void {
   }
