@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UserInfo } from './system.class';
-import { iNipProfile, iNoteStorage, NipNote, NipProfile, NipResponseEvent } from './websocket/nostr.class';
+import { iNoteStorage, NipNote, NipProfile } from './websocket/nostr.class';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +8,8 @@ import { iNipProfile, iNoteStorage, NipNote, NipProfile, NipResponseEvent } from
 export class StorageHelperService {
 
   constructor() { }
+
+  
 
   //Notes are used to store all gathered Notes by event id.
   setNotes(events: {[key: string]:NipNote}): boolean {
@@ -40,12 +42,17 @@ export class StorageHelperService {
 
   //Set User
   setUserInfo(user: UserInfo): boolean {
-    sessionStorage.setItem(StorageLabels.user, this.convertJsonToString(user));
+    localStorage.setItem(StorageLabels.user, this.convertJsonToString(user));
     return true;
   }
 
   getUserInfo(): UserInfo {
-    return this.convertStringToJson(sessionStorage.getItem(StorageLabels.user));
+    return this.convertStringToJson(localStorage.getItem(StorageLabels.user));
+  }
+
+  clearUserInfo(): boolean {
+    localStorage.removeItem(StorageLabels.currentPubKey);
+    return true;
   }
 
   //Arrays
@@ -281,5 +288,6 @@ export enum StorageLabels {
   notifications = 'nostriushand-notifications',
   muted = 'nostriushand-muted',
   relays = 'nostriushand-relays',
-  user = 'nostriushand-user'
+  user = 'nostriushand-user',
+  currentPubKey = 'nostriushand-current-pubkey'
 }

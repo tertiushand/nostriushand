@@ -1,6 +1,6 @@
 export interface iUserInfo {
-    pubkey: string;
-    theme: Themes;
+    pubkey?: string;
+    theme?: Themes;
 }
 
 export enum Themes {

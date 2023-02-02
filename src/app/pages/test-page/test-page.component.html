@@ -1,5 +1,6 @@
 <p>test-page works!</p>
-<p>{{getNos2xPubKey()}}</p>
+<p>{{this.storage.getUserInfo().pubkey}}</p>
+<button (click)="setPubKey()">Get Public Key</button>
 <button (click)="listenToRelay()">Listen to Relay</button>
 <button (click)="closeRelay1()">Close Relay 1</button>
 <button (click)="getProfile()">Get Profile</button>

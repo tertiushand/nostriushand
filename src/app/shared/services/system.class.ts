@@ -1,7 +1,7 @@
 import { iUserInfo, Themes } from "./system.interface";
 
 export class UserInfo {
-    pubkey: string;
+    pubkey?: string;
     theme: Themes;
 
     constructor(

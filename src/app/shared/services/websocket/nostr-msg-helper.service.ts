@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { webSocket } from 'rxjs/webSocket';
 import { StorageHelperService } from '../storage-helper.service';
 import { iNipProfile,iNipNote, NipNote, NipProfile, NipResponseEvent, iNoteStorage } from './nostr.class';
-import { iNipEvent, iNipFilter, iNipKind0Content } from './nostr.interface';
+import { iNipEvent, iNipFilter, iNipKind0Content, Nos2x } from './nostr.interface';
 import { InitializedRelay, RelayService } from './relay.service';
 
 @Injectable({
@@ -135,12 +135,12 @@ export class NostrMsgHelperService {
     });
   }
 
-  public getEvent(event:string, relay?:string) {
+  public getEvent(event:string, relay?:string, requestId?: string) {
     if (!this.storage.getNotes()[event]) {
       if (relay) {
         this.initiateNewRelay(relay);
         this.relay.initializedRelays[relay].sendMessage({
-          requestId: 'EVENT',
+          requestId: requestId?requestId:'EVENT',
           eventIds: [event],
           kinds: [1]
         });
@@ -149,7 +149,7 @@ export class NostrMsgHelperService {
           this.initiateNewRelay(relay);
           this.setNoteCallOpen(event);
           this.relay.initializedRelays[relay].sendMessage({
-            requestId: 'EVENT',
+            requestId: requestId?requestId:'EVENT',
             eventIds: [event],
             kinds: [1]
           });
@@ -173,7 +173,7 @@ export class NostrMsgHelperService {
   }
 
   //This is where the scrutinizing the response begins
-  public scrutinizeResponse(response: iNipEvent, eventId: string, relay: string) {
+  public scrutinizeResponse(response: iNipEvent, eventId: EventIds, relay: string) {
     switch(response?.kind) {
       case 0: this.scrutinizeKind0(response, relay); break;
       case 1: this.scrutinizeKind1(response, eventId, relay); break;
@@ -215,30 +215,39 @@ export class NostrMsgHelperService {
     this.storage.addToProfiles(newProfile);
   }
 
-  scrutinizeKind1(kind: iNipEvent, eventId: string, relay: string) {
+  scrutinizeKind1(kind: iNipEvent, eventId: EventIds, relay: string) {
     let hasReply = undefined;
     let hasRoot = undefined;
 
     let author = this.storage.getProfiles()[kind.pubkey];
+    const noteStorage: iNoteStorage = {id:kind.id,date:this.convertUnixTimestampToDate(kind.created_at)};
+
     author = author?new NipProfile(author):new NipProfile({
       pubkey: kind.pubkey
     });
 
     kind.tags.forEach(tag => {
       switch (tag[3]) {
-        case 'root':
+        case TagRelation.root:
           hasRoot = tag[1];
-          this.getEvent(tag[1],tag[2]);
+          this.getEvent(tag[1],tag[2], EventIds.root);
           break;
-        case 'reply':
+        case TagRelation.reply:
           hasReply = tag[1];
-          this.getEvent(tag[1],tag[2]);
+          this.getEvent(tag[1],tag[2], EventIds.reply);
           break;
       }
       
-      if (tag[0] === 'p') {
+      if (tag[0] === TagType.profile) {
+        if (tag[1] === this.storage.getUserInfo().pubkey)
+          this.storage.addToNotifications(noteStorage);
+        
         this.getUserProfile(tag[1], tag[2]);
-      } else if (tag[0] === 'e' && eventId !== 'EVENT') {
+      } else if (tag[0] === TagType.event &&
+        eventId !== EventIds.event &&
+        eventId !== EventIds.reply &&
+        eventId !== EventIds.root
+      ) {
         this.getEvent(tag[1], tag[2]);
       }
     });
@@ -253,8 +262,6 @@ export class NostrMsgHelperService {
       root: hasRoot,
       reply: hasReply
     }));
-
-    const noteStorage: iNoteStorage = {id:kind.id,date:this.convertUnixTimestampToDate(kind.created_at)};
 
     this.storage.addToAllNotes(noteStorage);
     author.addToAllNotes(noteStorage);
@@ -272,6 +279,10 @@ export class NostrMsgHelperService {
     } else {
       this.storage.addToReplies(noteStorage);
       author.addToReplies(noteStorage);
+    }
+
+    if (eventId === EventIds.reply || eventId === EventIds.root) {
+      this.storage.addToNotifications(noteStorage);
     }
 
     this.storage.addToProfiles(author);
@@ -315,9 +326,14 @@ export class NostrMsgHelperService {
     if (!this.relay.initializedRelays[relay]) {
       this.relay.initializedRelays[relay] = new InitializedRelay(webSocket(relay), this);
       this.relay.initializedRelays[relay].listen().subscribe(
-        message => {this.scrutinizeResponse(message[2] as iNipEvent,message[1] as string,relay)}
+        message => {this.scrutinizeResponse(message[2] as iNipEvent,message[1] as EventIds,relay)}
       );
     }
+  }
+
+  public getCurrentUserPubKey(): Promise<string> {
+    let nos2x = window as Window as Nos2x;
+    return nos2x.nostr.getPublicKey();
   }
 
   public mediaTypes = [
@@ -344,4 +360,20 @@ export interface iNostrRequest {
   since?: Date;
   until?: Date;
   limit?: number;
+}
+
+export enum EventIds {
+  event = 'EVENT',
+  root = 'ROOT',
+  reply = 'REPLY'
+}
+
+export enum TagType {
+  event = 'e',
+  profile = 'p'
+}
+
+export enum TagRelation {
+  root = 'root',
+  reply = 'reply'
 }
