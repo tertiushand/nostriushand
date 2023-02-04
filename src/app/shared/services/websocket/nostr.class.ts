@@ -97,7 +97,7 @@ export class NipResponseTag {
 
 export class NipProfile {
     public id?: string;
-    public preferredRelay?: string;
+    public preferredRelays?: string[];
     public created_at?: Date;
     public tags?: string[][];
     public sig?: string;
@@ -125,7 +125,7 @@ export class NipProfile {
         this.name = profile.name;
         this.about = profile.about;
         this.picture = profile.picture;
-        this.preferredRelay = profile.preferredRelay;
+        this.preferredRelays = profile.preferredRelays;
         this.callOpen = false;
         this.notes = profile.notes?profile.notes:[];
         this.allNotes = profile.allNotes?profile.allNotes:[];
@@ -147,7 +147,7 @@ export class NipProfile {
         this.name = profile.name;
         this.about = profile.about;
         this.picture = profile.picture;
-        this.preferredRelay = profile.preferredRelay;
+        this.preferredRelays = profile.preferredRelays;
         this.callOpen = false;
         return true;
     }
@@ -208,8 +208,8 @@ export class NipProfile {
         return this.notes;
     }
 
-    getPreferredRelay(): string | undefined {
-        return this.preferredRelay;
+    getPreferredRelay(): string[] | undefined {
+        return this.preferredRelays;
     }
 
     getAllNotes(): iNoteStorage[] | undefined {
@@ -233,9 +233,31 @@ export class NipProfile {
         return true;
     }
 
-    setPreferredRelay(relay: string): boolean {
-        this.preferredRelay = relay;
+    setPreferredRelay(relays: string[]): boolean {
+        this.preferredRelays = relays;
         return true;
+    }
+
+    addPreferredRelay(newRelay: string): NipProfile {
+        let notFound = true;
+        if (!this.preferredRelays) {
+            this.preferredRelays = [newRelay];
+            return this;
+        }            
+        
+        this.preferredRelays.some(relay => {
+            if (relay === newRelay) {
+                notFound = false;
+                return true;
+            }
+            return false;                
+        });
+
+        if (notFound) {
+            this.preferredRelays.push(newRelay);
+        }
+
+        return this;
     }
 
     setCreatedAtFromUnix(createdAt: number): boolean {
@@ -443,7 +465,7 @@ export enum NipResponseId {
 
 export interface iNipProfile {
     id?: string;
-    preferredRelay?: string;
+    preferredRelays?: string[];
     created_at?: Date | number;
     tags?: string[][];
     sig?: string;

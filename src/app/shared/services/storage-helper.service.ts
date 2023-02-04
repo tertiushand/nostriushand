@@ -190,6 +190,20 @@ export class StorageHelperService {
     return true;
   }
 
+  addRelayToProfile(pubkey: string, relay: string) {
+    let updateProfile = this.getProfiles();
+    if (!updateProfile)
+      updateProfile = {};
+    
+    if (!updateProfile[pubkey]) {
+      updateProfile[pubkey] = new NipProfile({pubkey: pubkey, preferredRelays: [relay]});
+    } else {
+      updateProfile[pubkey] = new NipProfile(updateProfile[pubkey]).addPreferredRelay(relay);
+    }
+
+    this.setProfiles(updateProfile);
+  }
+
   public addToAllNotes(event: iNoteStorage): boolean {
     this.setAllNotes(this.checkAndPush(this.getAllNotes(), event));
     return true;

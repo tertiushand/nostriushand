@@ -68,7 +68,7 @@ export class NostrMsgHelperService {
           authors: [pubkey]
         });
       } else if (!this.storage.getProfiles()[pubkey]) {
-        this.relay.relays.forEach(relay => {
+        Object.keys(this.relay.initializedRelays).forEach(relay => {
           this.initiateNewRelay(relay);
           this.relay.initializedRelays[relay].sendMessage({
             requestId: 'USER_PROFILE',
@@ -145,7 +145,7 @@ export class NostrMsgHelperService {
           kinds: [1]
         });
       } else {
-        this.relay.relays.forEach(relay => {
+        Object.keys(this.relay.initializedRelays).forEach(relay => {
           this.initiateNewRelay(relay);
           this.setNoteCallOpen(event);
           this.relay.initializedRelays[relay].sendMessage({
@@ -153,7 +153,7 @@ export class NostrMsgHelperService {
             eventIds: [event],
             kinds: [1]
           });
-        })
+        });
       }
       this.setNoteCallOpen(event);
     }
@@ -177,6 +177,7 @@ export class NostrMsgHelperService {
     switch(response?.kind) {
       case 0: this.scrutinizeKind0(response, relay); break;
       case 1: this.scrutinizeKind1(response, eventId, relay); break;
+      case 2: this.scrutinizeKind2(response);
     }
     
     //Should collect the functions to identify what kind of event it is and populate the appropriate objects and arrays.
@@ -196,7 +197,7 @@ export class NostrMsgHelperService {
         name: content.name,
         about: content.about,
         picture: content.picture,
-        preferredRelay: newProfile?newProfile.preferredRelay:relay
+        preferredRelays: newProfile?newProfile.preferredRelays:[relay]
       })
     } else {
       newProfile = new NipProfile({
@@ -208,7 +209,7 @@ export class NostrMsgHelperService {
         name: content.name,
         about: content.about,
         picture: content.picture,
-        preferredRelay: relay
+        preferredRelays: [relay]
       });
     }
     
@@ -286,6 +287,10 @@ export class NostrMsgHelperService {
     }
 
     this.storage.addToProfiles(author);
+  }
+
+  public scrutinizeKind2(kind: iNipEvent) {
+    this.storage.addRelayToProfile(kind.pubkey, kind.content);
   }
 
   private convertDateToUnixTimestamp(date: Date): number {
