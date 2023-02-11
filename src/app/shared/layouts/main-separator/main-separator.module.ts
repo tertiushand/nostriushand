@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FeedNoteComponent } from './feed-note.component';
+import { MainSeparatorComponent } from './main-separator.component';
 
 
 
 @NgModule({
   declarations: [
-    FeedNoteComponent
+    MainSeparatorComponent
   ],
   imports: [
     CommonModule
   ],
   exports: [
-    FeedNoteComponent
+    MainSeparatorComponent
   ]
 })
-export class FeedNoteModule { }
+export class MainSeparatorModule { }

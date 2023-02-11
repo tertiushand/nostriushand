@@ -5,8 +5,6 @@ import { FeedRoutingModule } from './feed-routing.module';
 
 import { MainModule } from './main/main.module';
 
-
-
 @NgModule({
   declarations: [],
   imports: [

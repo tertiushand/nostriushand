@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MainComponent } from './main.component';
+import { MainSeparatorModule } from 'src/app/shared/layouts/main-separator/main-separator.module';
 
 
 
@@ -9,7 +10,8 @@ import { MainComponent } from './main.component';
     MainComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    MainSeparatorModule
   ]
 })
 export class MainModule { }

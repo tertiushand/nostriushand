@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FeedNoteComponent } from './feed-note.component';
+import { SearchNavComponent } from './search-nav.component';
 
 
 
 @NgModule({
   declarations: [
-    FeedNoteComponent
+    SearchNavComponent
   ],
   imports: [
     CommonModule
   ],
   exports: [
-    FeedNoteComponent
+    SearchNavComponent
   ]
 })
-export class FeedNoteModule { }
+export class SearchNavModule { }
