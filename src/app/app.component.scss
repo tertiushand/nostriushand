@@ -4,9 +4,11 @@
 $color-primary: var(--primary-color);
 $color-secondary: var(--secondary-color);
 $color-mode: var(--mode-color);
-$color-modeFade: var(--mode-fade);
+$color-modeFadeLight: var(--mode-fade-light);
+$color-modeFadeDeep: var(--mode-fade-deep);
 $color-modeInvert: var(--mode-invert);
-$color-modeInvertFade: var(--mode-invert-fade);
+$color-modeInvertFadeLight: var(--mode-invert-fade-light);
+$color-modeInvertFadeDeep: var(--mode-invert-fade-deep);
 $color-warning: var(--warning-color);
 
 #main {
@@ -22,7 +24,7 @@ $color-warning: var(--warning-color);
         width: 275px;
     }
 
-    #feed {
+    #content-portal {
         width: 950px;
     }
 }
