@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidenavComponent } from './sidenav.component';
+import { ButtonLargeModule } from '../button-large/button-large.module';
 
 
 
@@ -9,7 +10,8 @@ import { SidenavComponent } from './sidenav.component';
     SidenavComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    ButtonLargeModule
   ],
   exports: [
     SidenavComponent
