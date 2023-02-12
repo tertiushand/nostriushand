@@ -1,3 +1,6 @@
 <div class="head">
-    <div *ngFor="let topic of topics" class="topic" (click)="router.navigate(topic.route)">{{topic.name}}</div>
+    <div *ngFor="let topic of topics" class="topic" (click)="router.navigate(topic.route)">
+        {{topic.name}}
+        <div class="active">&nbsp</div>
+    </div>
 </div>

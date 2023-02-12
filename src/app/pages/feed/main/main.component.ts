@@ -9,9 +9,10 @@ import { TopicHead } from 'src/app/shared/components/topic-head/topic-head.inter
 export class MainComponent {
 
   public topics: TopicHead[] = [
-    { name: 'Feed', route: ['feed']},
-    { name: 'Notes', route: ['feed', 'notes']},
-    { name: 'Replies', route: ['feed', 'replies']}
+    { name: 'Following', route: ['feed'] },
+    { name: 'Notes', route: ['feed', 'notes'] },
+    { name: 'Replies', route: ['feed', 'replies'] },
+    { name: 'Media', route: ['feed', 'replies'] }
   ]
 
 }
