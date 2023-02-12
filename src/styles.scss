@@ -1,7 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 :root {
-    --primary-color: #488cff;
+    --primary-color: #963fd9;
+    --primary-fade-deep: #5d2489;
+    --primary-fade-light: #762ead;
     --secondary-color: #ffff8c;
+    --secondary-fade-deep: #963fd9;
+    --secondary-fade-light: #963fd9;
     --mode-color: #fff;
     --mode-fade-deep: #aaa;
     --mode-fade-light: #ddd;
@@ -92,4 +96,5 @@ html, body {
 
 body {
     font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    color: var(--mode-invert);
 }

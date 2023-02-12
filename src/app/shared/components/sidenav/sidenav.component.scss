@@ -8,7 +8,7 @@ ul {
     margin: 0;
 
     li {
-        margin: 0;
+        margin: 5px 0;
         padding: 12px;
         list-style: none;
     }
@@ -17,4 +17,10 @@ ul {
         background-color: $color-modeFadeLight;
         border-radius: 25px;
     }
+}
+
+div {
+    padding: 20px 0;
+    padding-right: 15px;
+    margin: 0;
 }

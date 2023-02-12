@@ -2,7 +2,11 @@
 //document.documentElement.style.setProperty('--primary-color', color);
 
 $color-primary: var(--primary-color);
+$color-primaryFadeLight: var(--primary-fade-light);
+$color-primaryFadeDeep: var(--primary-fade-deep);
 $color-secondary: var(--secondary-color);
+$color-secondaryFadeLight: var(--secondary-fade-light);
+$color-secondaryFadeDeep: var(--secondary-fade-Deep);
 $color-mode: var(--mode-color);
 $color-modeFadeLight: var(--mode-fade-light);
 $color-modeFadeDeep: var(--mode-fade-deep);
