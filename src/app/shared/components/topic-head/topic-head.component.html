@@ -1,6 +1,6 @@
 <div class="head">
     <div *ngFor="let topic of topics" class="topic" (click)="router.navigate(topic.route)">
-        {{topic.name}}
-        <div class="active">&nbsp</div>
+        <div class="topic-name">{{topic.name}}</div>
+        <div class="active" *ngIf="checkIfCurrentRoute(topic.route)">&nbsp;</div>
     </div>
 </div>

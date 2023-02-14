@@ -1,0 +1,11 @@
+@import '../../../app.component.scss';
+
+.topic-header {
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid $color-modeFadeDeep;
+
+    .page-title {
+        padding: 16px;
+        font-size: 20px;
+    }
+}

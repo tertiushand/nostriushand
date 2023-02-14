@@ -9,12 +9,16 @@
     .topic {
         padding: 5px;
         text-align: center;
+        cursor: default;
+
+        .topic-name {
+            padding: 16px 0;
+        }
 
         .active {
             font-size: 4px;
             border-radius: 4px;
             background-color: $color-primary;
-            color: $color-primary;
         }
     }
 }
