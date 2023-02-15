@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SearchNavComponent } from './search-nav.component';
+import { WhoToFollowComponent } from './who-to-follow.component';
 
 
 
 @NgModule({
   declarations: [
-    SearchNavComponent
+    WhoToFollowComponent
   ],
   imports: [
     CommonModule
   ],
   exports: [
-    SearchNavComponent
+    WhoToFollowComponent
   ]
 })
-export class SearchNavModule { }
+export class WhoToFollowModule { }

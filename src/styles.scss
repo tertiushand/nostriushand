@@ -15,6 +15,18 @@
     --warning-color: #900;
 }
 
+/* Dark mode */
+//@media (prefers-color-scheme: dark) {
+    :root {
+        --mode-color: #000;
+        --mode-fade-deep: #333;
+        --mode-fade-light: #555;
+        --mode-invert: #FFF;
+        --mode-invert-fade-deep: #aaa;
+        --mode-invert-fade-light: #ddd;
+    }
+//}
+
 @font-face {
     font-family: "Roboto";
     src: url('./assets/fonts/Roboto/Roboto-Regular.ttf');

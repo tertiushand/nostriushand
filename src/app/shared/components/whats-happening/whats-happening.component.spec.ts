@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SearchNavComponent } from './search-nav.component';
+import { WhatsHappeningComponent } from './whats-happening.component';
 
-describe('SearchNavComponent', () => {
-  let component: SearchNavComponent;
-  let fixture: ComponentFixture<SearchNavComponent>;
+describe('WhatsHappeningComponent', () => {
+  let component: WhatsHappeningComponent;
+  let fixture: ComponentFixture<WhatsHappeningComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SearchNavComponent ]
+      declarations: [ WhatsHappeningComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SearchNavComponent);
+    fixture = TestBed.createComponent(WhatsHappeningComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
