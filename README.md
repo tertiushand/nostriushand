@@ -8,15 +8,19 @@ I look forward to hearing any feedback on this client and will incorporate any i
 
 ## Road map
 
-- 0.0.1 - Setting User info to gather and browse all of the feeds they follow on Nostr.
-- 0.0.2 - Support displaying media content.
-- 0.0.3 - Incorporate openmoji widget.
-- 0.0.4 - Incorporate Giphy widget.
-- 0.0.5 - Incorporate Nostr Images.
-- 0.1.0 - Private messaging.
-- 0.2.0 - Personal notes.
-- 0.3.0 - Shared notes.
-- 0.4.0 - Incoporate RSS feeds.
+- 0.1 - Setting User info to gather and browse all of the feeds they follow on Nostr.
+- 0.2 - Support displaying media content.
+- 0.3 - Post Notes.
+- 0.3.1 - Incorporate openmoji widget.
+- 0.3.2 - Incorporate Giphy widget.
+- 0.3.3 - Incorporate Nostr Images.
+- 0.4 - Work through Explore section.
+- 0.5 - Work out onboarding users.
+- 1.0 - Private messaging.
+- 2.0 - Personal notes.
+- 3.0 - Shared notes.
+- 4.0 - Incoporate RSS feeds.
+- 5.0 - Create Forum system.
 
 # Angular Deployment Instructions
 
@@ -26,21 +30,9 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
 ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
 ## Further help
 
