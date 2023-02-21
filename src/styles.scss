@@ -7,20 +7,23 @@
     --secondary-fade-deep: #963fd9;
     --secondary-fade-light: #963fd9;
     --mode-color: #fff;
-    --mode-fade-deep: #aaa;
+    --mode-fade-deep: #bbb;
     --mode-fade-light: #ddd;
     --mode-invert: #000;
     --mode-invert-fade-deep: #555;
     --mode-invert-fade-light: #333;
     --warning-color: #900;
+
+    --white: #fff;
+    --black: #000;
 }
 
 /* Dark mode */
 //@media (prefers-color-scheme: dark) {
     :root {
         --mode-color: #000;
-        --mode-fade-deep: #333;
-        --mode-fade-light: #555;
+        --mode-fade-deep: #444;
+        --mode-fade-light: #222;
         --mode-invert: #FFF;
         --mode-invert-fade-deep: #aaa;
         --mode-invert-fade-light: #ddd;

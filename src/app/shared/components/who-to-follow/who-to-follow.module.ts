@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WhoToFollowComponent } from './who-to-follow.component';
+import { LightFadeContainerModule } from '../light-fade-container/light-fade-container.module';
 
 
 
@@ -9,7 +10,8 @@ import { WhoToFollowComponent } from './who-to-follow.component';
     WhoToFollowComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    LightFadeContainerModule
   ],
   exports: [
     WhoToFollowComponent

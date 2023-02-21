@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WhatsHappeningComponent } from './whats-happening.component';
-
+import { LightFadeContainerModule  } from '../light-fade-container/light-fade-container.module'
 
 
 @NgModule({
@@ -9,7 +9,8 @@ import { WhatsHappeningComponent } from './whats-happening.component';
     WhatsHappeningComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    LightFadeContainerModule
   ],
   exports: [
     WhatsHappeningComponent

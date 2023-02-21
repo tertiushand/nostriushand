@@ -1,0 +1,23 @@
+h3 {
+    margin-top: 0;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-around;
+
+    li {
+        padding: 10px 0;
+        list-style: none;
+
+        p {
+            margin: 0;
+        }
+
+    }
+}
