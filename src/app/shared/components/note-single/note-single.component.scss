@@ -4,10 +4,25 @@ article {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    padding: 16px;
 
-    .prof-pic {
+    .prof-side {
         width: 10%;
+        padding-right: 12px;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: center;
+
+        .prof-pic {
+
+        }
+
+        .reply-line {
+            height: 100%;
+            width: 2px;
+            border-radius: 2px;
+            background-color: $color-modeFadeDeep;
+        }
     }
 
     .content {
