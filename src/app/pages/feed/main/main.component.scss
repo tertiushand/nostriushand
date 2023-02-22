@@ -3,6 +3,8 @@
 .topic-header {
     backdrop-filter: blur(10px);
     border-bottom: 1px solid $color-modeFadeDeep;
+    position: sticky;
+    top: 0;
 
     .page-title {
         padding: 16px;
