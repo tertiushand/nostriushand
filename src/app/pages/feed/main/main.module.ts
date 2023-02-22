@@ -7,6 +7,7 @@ import { SearchBarModule } from 'src/app/shared/components/search-bar/search-bar
 import { WhatsHappeningModule } from 'src/app/shared/components/whats-happening/whats-happening.module';
 import { WhoToFollowModule } from 'src/app/shared/components/who-to-follow/who-to-follow.module';
 import { FooterLinksModule } from 'src/app/shared/components/footer-links/footer-links.module';
+import { NoteFeedModule } from 'src/app/shared/components/note-feed/note-feed.module';
 
 
 
@@ -21,7 +22,8 @@ import { FooterLinksModule } from 'src/app/shared/components/footer-links/footer
     SearchBarModule,
     WhatsHappeningModule,
     WhoToFollowModule,
-    FooterLinksModule
+    FooterLinksModule,
+    NoteFeedModule
   ]
 })
 export class MainModule { }

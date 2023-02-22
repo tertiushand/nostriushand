@@ -1,0 +1,17 @@
+@import '../../../app.component.scss';
+
+div {
+    background-color: $color-modeFadeLight;
+    border-radius: 20px;
+    padding: 10px;
+    margin: 10px 0;
+
+    input, input:focus {
+        font-size: 15px;
+        padding-left: 20px;
+        background: none;
+        border: none;
+        outline: none;
+        color: $color-modeInvert;
+    }
+}

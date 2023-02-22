@@ -1,0 +1,23 @@
+article {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+    .prof-pic {
+        width: 10%;
+    }
+
+    .content {
+        width: 100%;
+
+        .cont-head {
+            display: flex;
+            flex-direction: row-reverse;
+            flex-wrap: nowrap;
+
+            .prof-name {
+                width: 100%;
+            }
+        }
+    }
+}

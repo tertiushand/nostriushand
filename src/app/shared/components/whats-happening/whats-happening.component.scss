@@ -1,3 +1,5 @@
+@import '../../../app.component.scss';
+
 h3 {
     margin-top: 0;
 }
@@ -10,8 +12,15 @@ ul {
         padding: 10px 0;
         list-style: none;
 
+        h4 {
+            margin: 0;
+        }
+
         p {
             margin: 0;
+            font-size: 0.8em;
+            font-weight: 300;
+            color: $color-modeInvertFadeDeep;
         }
 
     }
