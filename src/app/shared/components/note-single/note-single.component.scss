@@ -1,7 +1,10 @@
+@import '../../../app.component.scss';
+
 article {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+    padding: 16px;
 
     .prof-pic {
         width: 10%;
@@ -17,7 +20,17 @@ article {
 
             .prof-name {
                 width: 100%;
+                padding-bottom: 3px;
+
+                span {
+                    color: $color-modeInvertFadeDeep;
+                    font-weight: 300;
+                }
             }
+        }
+
+        .note {
+            font-weight: 300;
         }
     }
 }
