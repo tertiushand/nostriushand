@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NoteSingleComponent } from './note-single.component';
 import { NoteReactionModule } from '../note-reaction/note-reaction.module';
+import { ProfilePicModule } from '../profile-pic/profile-pic.module';
 
 
 
@@ -11,7 +12,8 @@ import { NoteReactionModule } from '../note-reaction/note-reaction.module';
   ],
   imports: [
     CommonModule,
-    NoteReactionModule
+    NoteReactionModule,
+    ProfilePicModule
   ],
   exports: [
     NoteSingleComponent

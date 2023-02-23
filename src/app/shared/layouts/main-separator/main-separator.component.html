@@ -1,4 +1,18 @@
 <div id="content-view">
     <div id="notes"><ng-content select=".notes"></ng-content></div>
-    <div id="right-bar"><div><ng-content select=".right-bar"></ng-content></div></div>
+    <div id="right-bar">
+        <div>
+            <div class="right-bar-marker"
+                observeVisibility
+                [debounceTime]="1"
+                (visible)="topVisible()"
+            >&nbsp;</div>
+            <ng-content select=".right-bar"></ng-content>
+            <div class="right-bar-marker"
+                observeVisibility
+                [debounceTime]="1"
+                (visible)="bottomVisible()"
+            >&nbsp;</div>
+        </div>
+    </div>
 </div>

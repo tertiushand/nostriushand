@@ -21,8 +21,19 @@
         padding-left: 25px;
 
         div {
-            position: sticky;
+            //position: sticky;
             top: 0;
         }
+
+        .right-bar-marker {
+            padding: 0;
+            margin: 0;
+            height: 1px;
+            font-size: 1px;
+        }
     }
+}
+
+.fixed {
+    position: fixed;
 }

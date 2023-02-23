@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'nh-note-single',
@@ -6,5 +6,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./note-single.component.scss']
 })
 export class NoteSingleComponent {
+
+  @Input() connectLine: boolean = false;
+
+  getProfilePic(): URL {
+    return new URL('https://i.imgur.com/a0TFmLV.jpeg');
+  }
 
 }
