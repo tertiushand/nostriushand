@@ -1,5 +1,11 @@
+@import '../../../app.component.scss';
+
 div {
     border-radius: 50%;
     background-position: center;
     background-size: cover;
+}
+
+.with-border {
+    border: 5px solid $color-mode;
 }

@@ -1,0 +1,51 @@
+@import '../../../app.component.scss';
+
+
+.thread {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: 5px 0;
+    align-items: center;
+
+    .prof-side {
+        width: 12%;
+        padding-right: 12px;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: center;
+
+        .reply-line {
+            height: 100%;
+            width: 2px;
+            border-radius: 2px;
+            background-color: $color-modeFadeDeep;
+        }
+
+        ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+
+            li {
+                margin: 5px 0;
+                height: 2px;
+                width: 2px;
+                border-radius: 2px;
+                background-color: $color-modeFadeDeep;
+            }
+        }
+    }
+
+    .message {
+        width: 100%
+    }
+}
+
+.touch-reply {
+    padding: 0;
+    margin-top: 7px;
+    height: 4px;
+
+}
