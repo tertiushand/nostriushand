@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'nh-feed-break',
@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./feed-break.component.scss']
 })
 export class FeedBreakComponent {
-
+  @Input() isReply?: boolean = false;
 }

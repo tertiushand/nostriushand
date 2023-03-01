@@ -6,7 +6,8 @@
             <li>&nbsp;</li>
         </ul>
     </div>
-    <div class="message">show thread</div>
+    <div class="message" *ngIf="!isReply">Show this thread</div>
+    <div class="message" *ngIf="isReply">Show more replies</div>
 </div>
 <div class="thread touch-reply">
     <div class="prof-side">
