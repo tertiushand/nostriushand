@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { UserInfo } from './system.class';
-import { iNoteStorage, NipNote, NipProfile } from './websocket/nostr.class';
+import { SystemEvent, SystemProfile, SystemUserInfo } from './system.class';
+import { iSystemEventListItem } from './system.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -11,27 +11,27 @@ export class StorageHelperService {
 
   
 
-  //Notes are used to store all gathered Notes by event id.
-  setNotes(events: {[key: string]:NipNote}): boolean {
-    sessionStorage.setItem(StorageLabels.notes, this.convertJsonToString(events));
+  //Events are used to store all gathered Events by event id.
+  setEvents(events: {[key: string]:SystemEvent}): boolean {
+    sessionStorage.setItem(StorageLabels.events, this.convertJsonToString(events));
     return true;
   }
 
-  getNotes(): {[key: string]:NipNote} {
-    return this.convertStringToJson(sessionStorage.getItem(StorageLabels.notes));
+  getEvents(): {[key: string]:SystemEvent} {
+    return this.convertStringToJson(sessionStorage.getItem(StorageLabels.events));
   }
 
-  clearNotes(): boolean {
-    sessionStorage.removeItem(StorageLabels.notes);
+  clearEvents(): boolean {
+    sessionStorage.removeItem(StorageLabels.events);
     return true;
   }
 
   //Profiles are a collection of user information by pubkeys
-  setProfiles(profiles: {[key: string]:NipProfile}) {
+  setProfiles(profiles: {[key: string]:SystemProfile}) {
     sessionStorage.setItem(StorageLabels.profiles, this.convertJsonToString(profiles));
   }
 
-  getProfiles(): {[key: string]:NipProfile} {
+  getProfiles(): {[key: string]:SystemProfile} {
     return this.convertStringToJson(sessionStorage.getItem(StorageLabels.profiles));
   }
 
@@ -41,73 +41,73 @@ export class StorageHelperService {
   }
 
   //Set User
-  setUserInfo(user: UserInfo): boolean {
+  setUserInfo(user: SystemUserInfo): boolean {
     localStorage.setItem(StorageLabels.user, this.convertJsonToString(user));
     return true;
   }
 
-  getUserInfo(): UserInfo {
+  getUserInfo(): SystemUserInfo {
     return this.convertStringToJson(localStorage.getItem(StorageLabels.user));
   }
 
   clearUserInfo(): boolean {
-    localStorage.removeItem(StorageLabels.currentPubKey);
+    localStorage.removeItem(StorageLabels.user);
     return true;
   }
 
-  //Arrays
-  //AllNotes is every Note regardless of type.
-  setAllNotes(events: iNoteStorage[]): boolean {
-    sessionStorage.setItem(StorageLabels.allNotes, this.convertJsonToString(events));
+  //Arrays of events of followed accounts
+  //AllEvents is every Event regardless of type.
+  setAllEvents(events: iSystemEventListItem[]): boolean {
+    sessionStorage.setItem(StorageLabels.allEvents, this.convertJsonToString(events));
     return true;
   }
 
-  getAllNotes(): iNoteStorage[] {
-    return this.convertStringToJson(sessionStorage.getItem(StorageLabels.allNotes));
+  getAllEvents(): iSystemEventListItem[] {
+    return this.convertStringToJson(sessionStorage.getItem(StorageLabels.allEvents));
   }
 
-  clearAllNotes(): boolean {
-    sessionStorage.removeItem(StorageLabels.allNotes);
+  clearAllEvents(): boolean {
+    sessionStorage.removeItem(StorageLabels.allEvents);
     return true;
   }
 
-  //Notes are notes that are not a reply. A root note.
-  setNotesList(events: iNoteStorage[]): boolean {
-    sessionStorage.setItem(StorageLabels.notesList, this.convertJsonToString(events));
+  //Roots are events that are not a reply. A root event.
+  setRootEvents(events: iSystemEventListItem[]): boolean {
+    sessionStorage.setItem(StorageLabels.roots, this.convertJsonToString(events));
     return true;
   }
 
-  getNotesList(): iNoteStorage[] {
-    return this.convertStringToJson(sessionStorage.getItem(StorageLabels.notesList));
+  getRootEvents(): iSystemEventListItem[] {
+    return this.convertStringToJson(sessionStorage.getItem(StorageLabels.roots));
   }
 
-  clearNotesList(): boolean {
-    sessionStorage.removeItem(StorageLabels.notesList);
+  clearRootEvents(): boolean {
+    sessionStorage.removeItem(StorageLabels.roots);
     return true;
   }
 
   //Replies are all the events that are replies to another event.
-  setReplies(events: iNoteStorage[]): boolean {
+  setReplyEvents(events: iSystemEventListItem[]): boolean {
     sessionStorage.setItem(StorageLabels.replies, this.convertJsonToString(events));
     return true;
   }
 
-  getReplies(): iNoteStorage[] {
+  getReplyEvents(): iSystemEventListItem[] {
     return this.convertStringToJson(sessionStorage.getItem(StorageLabels.replies));
   }
 
-  clearReplies(): boolean {
+  clearReplyEvents(): boolean {
     sessionStorage.removeItem(StorageLabels.replies);
     return true;
   }
 
   //Media are all events with a link to some form of media to display
-  setMedia(events: iNoteStorage[]): boolean {
+  setMedia(events: iSystemEventListItem[]): boolean {
     sessionStorage.setItem(StorageLabels.media, this.convertJsonToString(events));
     return true;
   }
 
-  getMedia(): iNoteStorage[] {
+  getMedia(): iSystemEventListItem[] {
     return this.convertStringToJson(sessionStorage.getItem(StorageLabels.media));
   }
 
@@ -116,13 +116,13 @@ export class StorageHelperService {
     return true;
   }
 
-  //Notifications are the people who have replied or interacted with the user's note in some way.
-  setNotifications(events: iNoteStorage[]): boolean {
+  //Notifications are the people who have replied or interacted with the user's event in some way.
+  setNotifications(events: iSystemEventListItem[]): boolean {
     sessionStorage.setItem(StorageLabels.notifications, this.convertJsonToString(events));
     return true;
   }
 
-  getNotifications(): iNoteStorage[] {
+  getNotifications(): iSystemEventListItem[] {
     return this.convertStringToJson(sessionStorage.getItem(StorageLabels.notifications));
   }
 
@@ -162,29 +162,29 @@ export class StorageHelperService {
   }
 
   //Adding to the storage
-  public addToNotes(note: NipNote): boolean {
-    let updateNotes = this.getNotes();
-    if (!updateNotes)
-      updateNotes = {};
+  public addToEvents(event: SystemEvent): boolean {
+    let updateEvents = this.getEvents();
+    if (!updateEvents)
+      updateEvents = {};
 
-    if (note.id && updateNotes[note.id]) {
-      updateNotes[note.id] = new NipNote(updateNotes[note.id]);
-      updateNotes[note.id].updateNote(note);
-    } else if (note.id) {
-      updateNotes[note.id] = note;
+    if (event.id && updateEvents[event.id]) {
+      updateEvents[event.id] = new SystemEvent(updateEvents[event.id]);
+      updateEvents[event.id].updateEvent(event);
+    } else if (event.id) {
+      updateEvents[event.id] = event;
     }
 
-    this.setNotes(updateNotes);
+    this.setEvents(updateEvents);
     return true;
   }
 
-  public addToProfiles(profile: NipProfile): boolean {
+  public addToProfiles(profile: SystemProfile): boolean {
     let updateProfile = this.getProfiles();
     if (!updateProfile)
       updateProfile = {};
 
-    if (profile.pubkey) {
-      updateProfile[profile.pubkey] = new NipProfile(profile);
+    if (profile.nostrId) {
+      updateProfile[profile.nostrId] = new SystemProfile(profile);
       this.setProfiles(updateProfile);
     }
     return true;
@@ -196,35 +196,35 @@ export class StorageHelperService {
       updateProfile = {};
     
     if (!updateProfile[pubkey]) {
-      updateProfile[pubkey] = new NipProfile({pubkey: pubkey, preferredRelays: [relay]});
+      updateProfile[pubkey] = new SystemProfile({nostrId: pubkey, preferredRelays: [relay]});
     } else {
-      updateProfile[pubkey] = new NipProfile(updateProfile[pubkey]).addPreferredRelay(relay);
+      updateProfile[pubkey] = new SystemProfile(updateProfile[pubkey]).addPreferredRelay(relay);
     }
 
     this.setProfiles(updateProfile);
   }
 
-  public addToAllNotes(event: iNoteStorage): boolean {
-    this.setAllNotes(this.checkAndPush(this.getAllNotes(), event));
+  public addToAllEvents(event: iSystemEventListItem): boolean {
+    this.setAllEvents(this.checkAndPush(this.getAllEvents(), event));
     return true;
   }
 
-  public addToNotesList(event: iNoteStorage): boolean {
-    this.setNotesList(this.checkAndPush(this.getNotesList(), event));
+  public addToEventsList(event: iSystemEventListItem): boolean {
+    this.setRootEvents(this.checkAndPush(this.getRootEvents(), event));
     return true;
   }
 
-  public addToReplies(event: iNoteStorage): boolean {
-    this.setReplies(this.checkAndPush(this.getReplies(), event));
+  public addToReplies(event: iSystemEventListItem): boolean {
+    this.setReplyEvents(this.checkAndPush(this.getReplyEvents(), event));
     return true;
   }
 
-  public addToMedia(event: iNoteStorage): boolean {
+  public addToMedia(event: iSystemEventListItem): boolean {
     this.setMedia(this.checkAndPush(this.getMedia(), event));
     return true;
   }
 
-  public addToNotifications(event: iNoteStorage): boolean {
+  public addToNotifications(event: iSystemEventListItem): boolean {
     this.setNotifications(this.checkAndPush(this.getNotifications(), event));
     return true;
   }
@@ -253,7 +253,7 @@ export class StorageHelperService {
   }
 
   //Private methods
-  checkAndPush(events: iNoteStorage[], eventToPush: iNoteStorage): iNoteStorage[] {
+  checkAndPush(events: iSystemEventListItem[], eventToPush: iSystemEventListItem): iSystemEventListItem[] {
     if (!(events instanceof Array))
       events = [];
     
@@ -292,11 +292,11 @@ export class StorageHelperService {
 }
 
 export enum StorageLabels {
+  roots = 'nostriushand-roots',
   events = 'nostriushand-events',
-  notes = 'nostriushand-notes',
   profiles = 'nostriushand-profiles',
-  allNotes = 'nostriushand-allNotes',
-  notesList = 'nostriushand-notesList',
+  allEvents = 'nostriushand-allEvents',
+  eventList = 'nostriushand-eventList',
   replies = 'nostriushand-replies',
   media = 'nostriushand-media',
   notifications = 'nostriushand-notifications',

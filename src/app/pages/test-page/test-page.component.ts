@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { StorageHelperService } from 'src/app/shared/services/storage-helper.service';
-import { UserInfo } from 'src/app/shared/services/system.class';
-import { EventIds, NostrMsgHelperService } from 'src/app/shared/services/websocket/nostr-msg-helper.service';
+import { EventIds, NostrMsgHelperService } from 'src/app/shared/services/nostr/nostr-msg-helper.service';
 import { UserInfoService } from 'src/app/shared/services/user-info.service';
-import { iNipEvent, Nos2x } from 'src/app/shared/services/websocket/nostr.interface';
 
-import { RelayService } from '../../shared/services/websocket/relay.service';
+import { RelayService } from '../../shared/services/nostr/relay.service';
+import { iNostrEvent } from 'src/app/shared/services/nostr/nostr.interface';
+import { SystemUserInfo } from 'src/app/shared/services/system.class';
 
 @Component({
   selector: 'app-test-page',
@@ -29,7 +29,7 @@ export class TestPageComponent implements OnInit {
   listenToRelay() {
     this.relays.initializedRelays[this.relayUrl].listen().subscribe(profile => {
       if (profile[2])
-        this.nostrMsg.scrutinizeResponse(profile[2] as iNipEvent, profile[1] as EventIds, this.relayUrl)
+        this.nostrMsg.scrutinizeResponse(profile[2] as iNostrEvent, profile[1] as EventIds, this.relayUrl)
     });
     console.log('listening to '+this.relayUrl)
   }
@@ -64,7 +64,7 @@ export class TestPageComponent implements OnInit {
   }
 
   showNotes() {
-    console.log(this.storage.getNotes());
+    console.log(this.storage.getEvents());
   }
 
   showProfiles() {
@@ -73,7 +73,7 @@ export class TestPageComponent implements OnInit {
 
   setPubKey() {
     this.nostrMsg.getCurrentUserPubKey().then(pubkey => {
-      this.storage.setUserInfo(new UserInfo({pubkey: pubkey}))
+      this.storage.setUserInfo(new SystemUserInfo({pubkey: pubkey}))
     })
   }
 

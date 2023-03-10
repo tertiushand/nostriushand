@@ -6,6 +6,15 @@ I simply wish to make the best client for myself. I am committed to making this 
 
 I look forward to hearing any feedback on this client and will incorporate any ideas I like and find useful.
 
+## Definition of terms
+
+Nostr - anything related to the objects found in the NIPs relating directly with the Nostr protocol.
+Event - data for notes stored and used for social media.
+Note - the way the events stored are displayed.
+Profile - data for profiles of event owners.
+UserInfo - data stored for the user of the site.
+System - objects and data unique to this site.
+
 ## Road map
 
 - 0.1 - Setting User info to gather and browse all of the feeds they follow on Nostr.

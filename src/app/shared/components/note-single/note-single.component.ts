@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { StorageHelperService } from '../../services/storage-helper.service';
-import { NipNote, NipProfile } from '../../services/websocket/nostr.class';
+import { SystemEvent, SystemProfile } from '../../services/system.class';
 
 @Component({
   selector: 'nh-note-single',
@@ -10,31 +10,31 @@ import { NipNote, NipProfile } from '../../services/websocket/nostr.class';
 export class NoteSingleComponent {
 
   @Input() connectLine?: boolean = false;
-  @Input() note: NipNote = new NipNote({id: '404'});
+  @Input() event: SystemEvent = new SystemEvent({id: '404'});
 
   constructor(
     private storage: StorageHelperService
   ){}
 
   getProfilePic(): string {
-    let profile = this.note.pubkey?this.getProfile(this.note.pubkey)?this.getProfile(this.note.pubkey):undefined:undefined;
+    let profile = this.event.profileId?this.getProfile(this.event.profileId)?this.getProfile(this.event.profileId):undefined:undefined;
     return profile && profile.picture?profile.picture:'https://i.imgur.com/a0TFmLV.jpeg';
   }
 
-  getProfile(pubkey: string | undefined): NipProfile | undefined {
+  getProfile(pubkey: string | undefined): SystemProfile | undefined {
     return pubkey?this.storage.getProfiles()[pubkey]:undefined;
   }
 
   getName(): string | undefined {
-    return this.getProfile(this.note.pubkey)?.name;
+    return this.getProfile(this.event.profileId)?.name;
   }
 
   getPubkey(): string | undefined {
-    return this.note.pubkey;
+    return this.event.profileId;
   }
 
   getContent(): string | undefined {
-    return this.note.content;
+    return this.event.content;
   }
 
 }

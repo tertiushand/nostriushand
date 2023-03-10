@@ -1,18 +1,4 @@
-import { NipResponseTag } from "./nostr.class";
-
-export interface iNipResponseEventUpgrade {
-    id: string; //32-bytes sha256 of the the serialized event data
-    pubkey: string; //32-bytes hex-encoded public key of the event creator
-    created_at: number; //unix timestamp in seconds
-    kind: number; //0 - profile information, 1 - all notes matching filter, 2 - the URL (e.g., wss://somerelay.com) of a relay the event creator wants to recommend to its followers, 3 - follows list
-    tags: NipResponseTag[]; //Array of arrays of "e" (event) and "p" (pubkey) with id/key then recommended relay.
-    content: string; //arbitrary string
-    profile?: iNipKind0Content;
-    sig: string; //64-bytes signature of the sha256 hash of the serialized event data, which is the same as the "id" field
-    ots?: any;
-}
-
-export interface iNipFilter {
+export interface iNostrQueryFilter {
     ids?: string[]; //a list of event ids or prefixes
     authors?: string[]; //a list of pubkeys or prefixes, the pubkey of an event must be one of these
     kinds?: number[]; //0 - profile information, 1 - get all notes matching filter, 2 - the URL (e.g., wss://somerelay.com) of a relay the event creator wants to recommend to its followers, 3 - follows list
@@ -23,17 +9,17 @@ export interface iNipFilter {
     limit?: number; //maximum number of events to be returned in the initial query
 }
 
-export interface iNipEvent {
+export interface iNostrEvent {
     content: string;
     created_at: number;
     id: string;
     kind: number;
     pubkey: string;
     sig: string;
-    tags: string[][];
+    tags: [nostrTag: NostrTagType, id: string, url: string, marker: NostrTagMarker][];
 }
 
-export interface iNipKind0Content {
+export interface iNostrProfile {
     name: string; //username
     about: string; //profile about text
     picture: string; //url of profile picture
@@ -54,3 +40,19 @@ export interface Nip04Extension {
     encrypt: Function; //has pubkey, plaintext arguments. returns ciphertext+iv as specified in nip04
     decrypt: Function; //has pubkey, ciphertext arguments. takes ciphertext+iv as specified
 }
+
+export enum NostrTagType {
+    event = "e",
+    pubkey = "p"
+}
+
+export enum NostrTagMarker {
+    root = 'root',
+    reply = 'reply'
+}
+
+export enum NostrEventId {
+    event = 'EVENT',
+    root = 'ROOT',
+    reply = 'REPLY'
+  }

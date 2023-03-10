@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TopicHead } from 'src/app/shared/components/topic-head/topic-head.interface';
 import { StorageHelperService } from 'src/app/shared/services/storage-helper.service';
-import { EventIds, NostrMsgHelperService } from 'src/app/shared/services/websocket/nostr-msg-helper.service';
-import { iNipEvent } from 'src/app/shared/services/websocket/nostr.interface';
-import { RelayService } from 'src/app/shared/services/websocket/relay.service';
+import { NostrMsgHelperService } from 'src/app/shared/services/nostr/nostr-msg-helper.service';
+import { RelayService } from 'src/app/shared/services/nostr/relay.service';
 
 @Component({
   selector: 'app-main',
